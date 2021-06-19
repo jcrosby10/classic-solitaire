@@ -1,0 +1,3 @@
+
+rootProject.name = "Classic Solitaire"
+include ':app'
