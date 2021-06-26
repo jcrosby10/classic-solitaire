@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 interface GamesDao {
 
     @Query("SELECT * FROM games")
-    fun getAllGames(): Flow<List<Games>>
+    suspend fun getAllGames(): Flow<List<Games>>
 
     @Query("SELECT * FROM games ORDER BY score ASC LIMIT 10")
-    fun getTopTenGames(): Flow<List<Games>>
+    suspend fun getTopTenGames(): Flow<List<Games>>
 }

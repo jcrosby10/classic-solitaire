@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.Flow
 interface PlayerDao {
 
     @Query("SELECT * FROM player")
-    fun getPlayer(): Flow<Player>
+    suspend fun getPlayer(): Flow<Player>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(player: Player)
+    suspend fun insert(player: Player)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun update(player: Player)
+    suspend fun update(player: Player)
 }
