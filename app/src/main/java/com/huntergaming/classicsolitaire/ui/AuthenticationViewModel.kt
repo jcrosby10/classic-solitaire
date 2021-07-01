@@ -13,6 +13,12 @@ class AuthenticationViewModel @Inject constructor(
     private val authRepo: AuthenticationRepository
 ): ViewModel() {
 
+    /*
+    * ViewModels should convert flows to LiveData because LIveData is lifecycle aware.
+    * */
+
+    var isLoggedIn = authRepo.isLoggedIn
+
     fun createAccount(email: String, password: String): Flow<AuthenticationState> = flow {
         emit(AuthenticationState.IN_PROGRESS)
 
