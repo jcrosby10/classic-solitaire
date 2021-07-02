@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun AppScreen(isLoggedIn: Boolean) {
+fun AppScreen(isLoggedIn: Boolean) {// debug are we going to the right screen
     if (isLoggedIn) {
         LoginScreen()
     } else {
