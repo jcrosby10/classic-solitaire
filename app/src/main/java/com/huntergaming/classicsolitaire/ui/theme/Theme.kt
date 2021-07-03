@@ -7,37 +7,48 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = PrimaryDark,
+    onPrimary = OnDark,
+    primaryVariant = VariantDark,
+    secondary = SecondaryDark,
+    onSecondary = OnDark,
+    background = BackgroundDark,
+    onBackground = OnDark,
+    error = ErrorDark,
+    onError = OnDark
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    primary = PrimaryLight,
+    onPrimary = OnLight,
+    primaryVariant = VariantLight,
+    secondary = SecondaryLight,
+    onSecondary = OnLight,
+    background = BackgroundLight,
+    onBackground = OnLight,
+    error = ErrorLight,
+    onError = OnLight
 )
 
 @Composable
 fun ClassicSolitaireTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
-    } else {
+    }
+    else {
         LightColorPalette
+    }
+
+    val typography = if (darkTheme) {
+        DarkTypography
+    }
+    else {
+        LightTypography
     }
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = typography,
         shapes = Shapes,
         content = content
     )
