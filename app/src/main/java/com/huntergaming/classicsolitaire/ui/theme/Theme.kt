@@ -32,23 +32,9 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun ClassicSolitaireTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    }
-    else {
-        LightColorPalette
-    }
-
-    val typography = if (darkTheme) {
-        DarkTypography
-    }
-    else {
-        LightTypography
-    }
-
     MaterialTheme(
-        colors = colors,
-        typography = typography,
+        colors = if (darkTheme) DarkColorPalette else LightColorPalette,
+        typography = if (darkTheme) DarkTypography else LightTypography,
         shapes = Shapes,
         content = content
     )

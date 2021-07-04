@@ -221,7 +221,7 @@ fun LoginScreen() {
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
-    ClassicSolitaireTheme {
+    ClassicSolitaireTheme(darkTheme = false) {
         AppScreen(isLoggedIn = false)
     }
 }
