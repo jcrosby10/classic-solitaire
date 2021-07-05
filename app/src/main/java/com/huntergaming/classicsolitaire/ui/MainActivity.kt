@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
@@ -79,7 +80,8 @@ fun MainMenu() {
 
 @Composable
 fun LoginScreen() {
-    var passwordVisibility = remember { false }
+    val passwordVisibility = remember { mutableStateOf(false) }
+    val createAccount = remember { mutableStateOf(false) }
 
     Text(
         text = stringResource(id = R.string.app_name),
@@ -105,33 +107,11 @@ fun LoginScreen() {
             modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
         )
 
-        Row(modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))) {
-            val textState = remember { mutableStateOf(TextFieldValue()) }
-            Text(
-                text = stringResource(id = R.string.login_email),
-                style = MaterialTheme.typography.body1,
-                modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.child_edge_padding)) // equivalent to padding inside
-                    .padding(end = dimensionResource(id = R.dimen.child_edge_padding)) // second padding acts as to margin putting space on the outside of the item
-            )
-            TextField(
-                value = textState.value,
-                onValueChange = { textState.value = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = MaterialTheme.colors.background,
-                    errorIndicatorColor = MaterialTheme.colors.error
-                ),
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.child_edge_padding)),
-                placeholder =  {
-                    Text(
-                        text = stringResource(id = R.string.login_email_hint),
-                        style = MaterialTheme.typography.body1
-                    )
-               },
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation()
-            )
-        }
+        FieldRow(
+            textResourceId = R.string.login_email,
+            hintResourceId = R.string.login_email_hint,
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
+        )
 
         Row(
             modifier = Modifier
@@ -140,8 +120,8 @@ fun LoginScreen() {
             horizontalArrangement = Arrangement.Start
         ) {
             Checkbox(
-                checked = passwordVisibility,
-                onCheckedChange = { passwordVisibility = !passwordVisibility },
+                checked = passwordVisibility.value,
+                onCheckedChange = { passwordVisibility.value = !passwordVisibility.value },
                 colors = CheckboxDefaults.colors(
                     checkedColor = MaterialTheme.colors.secondary,
                     uncheckedColor = MaterialTheme.colors.primaryVariant,
@@ -158,31 +138,12 @@ fun LoginScreen() {
             )
         }
 
-        Row(modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))) {
-            val textState = remember { mutableStateOf(TextFieldValue()) }
-            Text(
-                text = stringResource(id = R.string.login_password),
-                style = MaterialTheme.typography.body1,
-                modifier = Modifier
-                    .padding(end = dimensionResource(id = R.dimen.child_edge_padding))
-            )
-            TextField(
-                value = textState.value,
-                onValueChange = { textState.value = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = MaterialTheme.colors.onPrimary,
-                    backgroundColor = MaterialTheme.colors.background,
-                    errorIndicatorColor = MaterialTheme.colors.error
-                ),
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.child_edge_padding)),
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.login_password_hint),
-                        style = MaterialTheme.typography.body1
-                    )
-                }
-            )
-        }
+        FieldRow(
+            textResourceId = R.string.login_password,
+            hintResourceId = R.string.login_password_hint,
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding)),
+            showPassword = passwordVisibility.value
+        )
 
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding)),
@@ -202,7 +163,7 @@ fun LoginScreen() {
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.child_edge_padding))
             )
             Button(
-                onClick = {  },
+                onClick = { createAccount.value = true },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = MaterialTheme.colors.primary
                 ),
@@ -215,6 +176,8 @@ fun LoginScreen() {
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.child_edge_padding))
             )
         }
+
+        if (createAccount.value) CreateAccount()
     }
 }
 
@@ -223,5 +186,77 @@ fun LoginScreen() {
 private fun DefaultPreview() {
     ClassicSolitaireTheme(darkTheme = false) {
         AppScreen(isLoggedIn = false)
+    }
+}
+
+@Composable
+private fun CreateAccount() {
+    Dialog(onDismissRequest = {  }) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+            .padding(dimensionResource(id = R.dimen.container_edge_padding)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center) {
+
+            FieldRow(
+                textResourceId = R.string.create_account_firstname,
+                hintResourceId = R.string.create_account_firstname_hint,
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
+            )
+
+            FieldRow(
+                textResourceId = R.string.create_account_lastname,
+                hintResourceId = R.string.create_account_lastname_hint,
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
+            )
+
+            FieldRow(
+                textResourceId = R.string.create_account_email,
+                hintResourceId = R.string.create_account_email_hint,
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
+            )
+
+            FieldRow(
+                textResourceId = R.string.create_account_password,
+                hintResourceId = R.string.create_account_password_hint,
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
+            )
+        }
+    }
+}
+
+@Composable
+private fun FieldRow(
+    textResourceId: Int,
+    hintResourceId: Int,
+    modifier: Modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding)),
+    showPassword: Boolean = false
+) {
+    Row(modifier = modifier) {
+        val textState = remember { mutableStateOf(TextFieldValue()) }
+        Text(
+            text = stringResource(id = textResourceId),
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.padding(end = dimensionResource(id = R.dimen.child_edge_padding)),
+            textAlign = TextAlign.Center
+        )
+        TextField(
+            value = textState.value,
+            onValueChange = { textState.value = it },
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = MaterialTheme.colors.onPrimary,
+                backgroundColor = MaterialTheme.colors.background,
+                errorIndicatorColor = MaterialTheme.colors.error
+            ),
+            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.child_edge_padding)),
+            placeholder = {
+                Text(
+                    text = stringResource(id = hintResourceId),
+                    style = MaterialTheme.typography.body1
+                )
+            },
+            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation()
+        )
     }
 }
