@@ -25,8 +25,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.Observer
 import com.huntergaming.classicsolitaire.R
-import com.huntergaming.classicsolitaire.data.AuthenticationState
 import com.huntergaming.classicsolitaire.ui.AuthenticationViewModel
+import com.huntergaming.classicsolitaire.web.RequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Composable
@@ -161,27 +161,27 @@ fun CreateAccountDialog(
                             ClassicSolitaireButton(
                                 isEnabled = validEmail.value,
                                 onClick = {
-                                    val resultObserver = Observer<AuthenticationState> { result ->
+                                    val resultObserver = Observer<RequestState> { result ->
                                         when (result) {
-                                            is AuthenticationState.NoInternet -> {
+                                            is RequestState.NoInternet -> {
                                                 createAccountMessage.value = R.string.error_no_internet
                                                 showAlertDialog.value = true
                                             }
 
-                                            is AuthenticationState.InProgress -> { showProgressIndicator.value = true }
+                                            is RequestState.InProgress -> { showProgressIndicator.value = true }
 
-                                            is AuthenticationState.Error -> {
+                                            is RequestState.Error -> {
                                                 resetPassword.value = true
                                                 createAccountMessage.value = R.string.create_account_error_message
                                                 showAlertDialog.value = true
                                             }
 
-                                            is AuthenticationState.Success -> {
+                                            is RequestState.Success -> {
                                                 showProgressIndicator.value = false
                                                 showAlertDialog.value = false
                                             }
 
-                                            else -> { throw IllegalStateException("The AuthenticationState provided was not valid.") }
+                                            else -> { throw IllegalStateException("The RequestState provided was not valid.") }
                                         }
                                     }
                                     authViewModel?.resetPassword(textState[2].value.text)?.observe(activity, resultObserver)
@@ -197,17 +197,17 @@ fun CreateAccountDialog(
                 ClassicSolitaireButton(
                     isEnabled = validPassword.value && validEmail.value && validFirstName.value && validLastName.value,
                     onClick = {
-                        val resultObserver = Observer<AuthenticationState> { result ->
+                        val resultObserver = Observer<RequestState> { result ->
                             when (result) {
-                                is AuthenticationState.NoInternet -> {
+                                is RequestState.NoInternet -> {
                                     createAccountMessage.value = R.string.error_no_internet
                                     showProgressIndicator.value = false
                                     showAlertDialog.value = true
                                 }
 
-                                is AuthenticationState.InProgress -> { showProgressIndicator.value = true }
+                                is RequestState.InProgress -> { showProgressIndicator.value = true }
 
-                                is AuthenticationState.Error -> {
+                                is RequestState.Error -> {
                                     resetPassword.value = true
                                     val errorMessage =
                                         if (result.message == "The email address is already in use by another account.") R.string.create_account_email_already_in_use
@@ -217,13 +217,13 @@ fun CreateAccountDialog(
                                     showAlertDialog.value = true
                                 }
 
-                                is AuthenticationState.Success -> {
+                                is RequestState.Success -> {
                                     createAccountMessage.value = R.string.create_account_success_message
                                     showProgressIndicator.value = false
                                     showAlertDialog.value = true
                                 }
 
-                                else -> { throw IllegalStateException("The AuthenticationState provided was not valid.") }
+                                else -> { throw IllegalStateException("The RequestState provided was not valid.") }
                             }
                         }
 

@@ -4,6 +4,7 @@ import android.text.TextUtils
 import android.util.Patterns.EMAIL_ADDRESS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.huntergaming.classicsolitaire.web.RequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
@@ -39,52 +40,52 @@ class FirebaseAuthentication @Inject constructor(
     override fun validateEmailAddress(email: String): Boolean =
         if (TextUtils.isEmpty(email)) false else EMAIL_ADDRESS.matcher(email).matches()
 
-    override fun resetPassword(email: String): Flow<AuthenticationState> = callbackFlow {
+    override fun resetPassword(email: String): Flow<RequestState> = callbackFlow {
         auth.sendPasswordResetEmail(email)
-            .addOnSuccessListener { trySend(AuthenticationState.Success) }
+            .addOnSuccessListener { trySend(RequestState.Success) }
             .addOnFailureListener {
                 Timber.e(it)
-                trySend(AuthenticationState.Error(it.message))
+                trySend(RequestState.Error(it.message))
             }
 
         awaitClose { cancel() }
     }
 
-    override suspend fun createAccount(email: String, password: String): Flow<AuthenticationState> = callbackFlow {
+    override suspend fun createAccount(email: String, password: String): Flow<RequestState> = callbackFlow {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 auth.currentUser?.sendEmailVerification()
                     ?.addOnSuccessListener {
                         signOut()
-                        trySend(AuthenticationState.Success)
+                        trySend(RequestState.Success)
                     }
                     ?.addOnFailureListener {
                         signOut()
                         Timber.e(it)
-                        trySend(AuthenticationState.Error(it.message))
+                        trySend(RequestState.Error(it.message))
                     }
             }
             .addOnFailureListener {
                 signOut()
                 Timber.e(it)
-                trySend(AuthenticationState.Error(it.message))
+                trySend(RequestState.Error(it.message))
             }
 
         awaitClose { cancel() }
     }
 
-    override fun deleteAccount(): Flow<AuthenticationState> {
+    override fun deleteAccount(): Flow<RequestState> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun signIn(email: String, password: String): Flow<AuthenticationState> = callbackFlow {
+    override suspend fun signIn(email: String, password: String): Flow<RequestState> = callbackFlow {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                trySend(AuthenticationState.Success)
+                trySend(RequestState.Success)
             }
             .addOnFailureListener {
                 Timber.e(it)
-                trySend(AuthenticationState.Error(it.message))
+                trySend(RequestState.Error(it.message))
             }
 
         awaitClose { cancel() }
@@ -93,11 +94,4 @@ class FirebaseAuthentication @Inject constructor(
     override fun signOut() {
         auth.signOut()
     }
-}
-
-sealed class AuthenticationState {// pull to separate file
-    object NoInternet: AuthenticationState()
-    object InProgress: AuthenticationState()
-    object Success : AuthenticationState()
-    class Error(val message: String?) : AuthenticationState()
 }

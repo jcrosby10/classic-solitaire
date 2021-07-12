@@ -1,5 +1,9 @@
 package com.huntergaming.classicsolitaire.ui
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -30,19 +34,25 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Observer
 import com.huntergaming.classicsolitaire.R
-import com.huntergaming.classicsolitaire.data.AuthenticationState
 import com.huntergaming.classicsolitaire.ui.compose.ClassicSolitaireButton
 import com.huntergaming.classicsolitaire.ui.compose.CreateAccountDialog
 import com.huntergaming.classicsolitaire.ui.compose.FieldRow
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
+import com.huntergaming.classicsolitaire.web.InternetStatus
+import com.huntergaming.classicsolitaire.web.RequestState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var internetStatus: InternetStatus
 
     private val authViewModel: AuthenticationViewModel? by viewModels()
 
@@ -66,6 +76,24 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerNetworkCallback(
+            NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build(),
+            internetStatus.networkCallBack
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.unregisterNetworkCallback(internetStatus.networkCallBack)
     }
 }
 
@@ -190,7 +218,7 @@ fun LoginScreen(authViewModel: AuthenticationViewModel?, activity: AppCompatActi
             ClassicSolitaireButton(
                 isEnabled = isLoginEnabled.value,
                 onClick = {
-                    val resultObserver = Observer<AuthenticationState> {
+                    val resultObserver = Observer<RequestState> {
                         //todo invalid password - The password is invalid or the user does not have a password.
                         // todo invalid email - There is no user record corresponding to this identifier. The user may have been deleted.
                     }

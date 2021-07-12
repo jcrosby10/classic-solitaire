@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.huntergaming.classicsolitaire.data.AuthenticationState
 import com.huntergaming.classicsolitaire.model.Player
 import com.huntergaming.classicsolitaire.repository.AuthenticationRepository
 import com.huntergaming.classicsolitaire.repository.SolitaireRepository
+import com.huntergaming.classicsolitaire.web.RequestState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,6 @@ import javax.inject.Inject
 class AuthenticationViewModel @Inject constructor(
     private val authRepo: AuthenticationRepository,
     private val solitaireRepository: SolitaireRepository,
-    // todo validate internet connection before making requests
     @ApplicationContext private val context: Context
 ): ViewModel() {
 
@@ -52,24 +51,24 @@ class AuthenticationViewModel @Inject constructor(
     fun validateStrongPassword(password: String): Boolean = authRepo.validateStrongPassword(password)
     fun validateEmailAddress(email: String): Boolean = authRepo.validateEmailAddress(email)
 
-    fun resetPassword(email: String): LiveData<AuthenticationState> = flow {
-        emit(AuthenticationState.InProgress)
+    fun resetPassword(email: String): LiveData<RequestState> = flow {
+        emit(RequestState.InProgress)
 
         authRepo.resetPassword(email).collect {
             emit(it)
         }
     }.asLiveData()
 
-    fun signIn(email: String, password: String): LiveData<AuthenticationState> = flow {
-        emit(AuthenticationState.InProgress)
+    fun signIn(email: String, password: String): LiveData<RequestState> = flow {
+        emit(RequestState.InProgress)
 
         authRepo.sighIn(email, password).collect {
             emit(it)
         }
     }.asLiveData()
 
-    fun createAccount(email: String, password: String): LiveData<AuthenticationState> = flow {
-        emit(AuthenticationState.InProgress)
+    fun createAccount(email: String, password: String): LiveData<RequestState> = flow {
+        emit(RequestState.InProgress)
         authRepo.createAccount(email, password).collect { emit(it) }
     }.asLiveData()
 }

@@ -2,14 +2,20 @@ package com.huntergaming.classicsolitaire.repository
 
 import com.huntergaming.classicsolitaire.data.Dao
 import com.huntergaming.classicsolitaire.model.Player
+import com.huntergaming.classicsolitaire.web.InternetStatus
+import com.huntergaming.classicsolitaire.web.RequestState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 class SolitaireRepository @Inject constructor(
-    private val playerDao: Dao<Player>
+    private val playerDao: Dao<Player>,
+    private val internetStatus: InternetStatus
 ) {
 
-    fun create(player: Player) {
-        playerDao.create(player)
+   suspend fun create(player: Player): Flow<RequestState> {
+        if (!internetStatus.isConnected) return flowOf(RequestState.NoInternet)
+        return playerDao.create(player)
     }
 
     /**
