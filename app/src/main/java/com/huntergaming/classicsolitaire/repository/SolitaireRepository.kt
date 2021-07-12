@@ -1,10 +1,16 @@
 package com.huntergaming.classicsolitaire.repository
 
+import com.huntergaming.classicsolitaire.data.Dao
+import com.huntergaming.classicsolitaire.model.Player
 import javax.inject.Inject
 
 class SolitaireRepository @Inject constructor(
-
+    private val playerDao: Dao<Player>
 ) {
+
+    fun create(player: Player) {
+        playerDao.create(player)
+    }
 
     /**
      * Get all games from the database.

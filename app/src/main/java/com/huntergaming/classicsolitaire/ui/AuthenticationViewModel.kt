@@ -1,32 +1,75 @@
 package com.huntergaming.classicsolitaire.ui
 
+import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.huntergaming.classicsolitaire.data.AuthenticationState
+import com.huntergaming.classicsolitaire.model.Player
 import com.huntergaming.classicsolitaire.repository.AuthenticationRepository
+import com.huntergaming.classicsolitaire.repository.SolitaireRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
-    private val authRepo: AuthenticationRepository
+    private val authRepo: AuthenticationRepository,
+    private val solitaireRepository: SolitaireRepository,
+    // todo validate internet connection before making requests
+    @ApplicationContext private val context: Context
 ): ViewModel() {
 
     /*
     * ViewModels should convert flows to LiveData because LIveData is lifecycle aware.
     * */
 
-    var isLoggedIn = authRepo.isLoggedIn
+    val isLoggedIn = authRepo.isLoggedIn
+    private val emailVerifiedFlow = authRepo.emailVerifiedFlow
 
-    fun createAccount(email: String, password: String): Flow<AuthenticationState> = flow {
-        emit(AuthenticationState.IN_PROGRESS)
-
-        when (authRepo.createAccount(email, password)) {
-            AuthenticationState.ERROR -> { emit(AuthenticationState.ERROR) }
-            AuthenticationState.FAILED -> { emit(AuthenticationState.FAILED) }
-            AuthenticationState.SUCCESS -> { emit(AuthenticationState.SUCCESS) }
-            else -> { throw IllegalStateException("The AuthenticationState provided was not valid.") }
+    init {
+        CoroutineScope(Dispatchers.Default).launch {
+            emailVerifiedFlow.collect {
+                if (it == true) {
+                    context
+                        .getSharedPreferences("temp", Context.MODE_PRIVATE).apply {
+                            solitaireRepository.create(Player(
+                                authRepo.currentUser?.uid!!, getString("f", "")!!, getString("l", "")!!, 0, 0
+                            ))
+                        }
+                }
+            }
         }
     }
+
+    fun validateStrongPassword(password: String): Boolean = authRepo.validateStrongPassword(password)
+    fun validateEmailAddress(email: String): Boolean = authRepo.validateEmailAddress(email)
+
+    fun resetPassword(email: String): LiveData<AuthenticationState> = flow {
+        emit(AuthenticationState.InProgress)
+
+        authRepo.resetPassword(email).collect {
+            emit(it)
+        }
+    }.asLiveData()
+
+    fun signIn(email: String, password: String): LiveData<AuthenticationState> = flow {
+        emit(AuthenticationState.InProgress)
+
+        authRepo.sighIn(email, password).collect {
+            emit(it)
+        }
+    }.asLiveData()
+
+    fun createAccount(email: String, password: String): LiveData<AuthenticationState> = flow {
+        emit(AuthenticationState.InProgress)
+        authRepo.createAccount(email, password).collect { emit(it) }
+    }.asLiveData()
 }

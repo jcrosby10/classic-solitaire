@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="container_edge_padding">10dp</dimen>
-    <dimen name="child_edge_padding">5dp</dimen>
+    <dimen name="edge_padding_5dp">5dp</dimen>
+    <dimen name="edge_padding_10dp">10dp</dimen>
+    <dimen name="edge_padding_15dp">15dp</dimen>
 </resources>

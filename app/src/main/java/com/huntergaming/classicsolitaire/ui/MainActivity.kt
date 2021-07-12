@@ -14,36 +14,37 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.Observer
 import com.huntergaming.classicsolitaire.R
+import com.huntergaming.classicsolitaire.data.AuthenticationState
+import com.huntergaming.classicsolitaire.ui.compose.ClassicSolitaireButton
+import com.huntergaming.classicsolitaire.ui.compose.CreateAccountDialog
+import com.huntergaming.classicsolitaire.ui.compose.FieldRow
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val authViewModel: AuthenticationViewModel by viewModels()
+    private val authViewModel: AuthenticationViewModel? by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,16 +59,30 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             ClassicSolitaireTheme {
-                AppScreen(isLoggedIn = authViewModel.isLoggedIn)
+                AppScreen(
+                    isLoggedIn = authViewModel?.isLoggedIn == true,
+                    authViewModel = authViewModel,
+                    activity = this
+                )
             }
         }
     }
 }
 
+@ExperimentalCoroutinesApi
+@Preview(showBackground = true)
 @Composable
-fun AppScreen(isLoggedIn: Boolean) {
+private fun DefaultPreview() {
+    ClassicSolitaireTheme(darkTheme = false) {
+        AppScreen(isLoggedIn = false)
+    }
+}
+
+@ExperimentalCoroutinesApi
+@Composable
+fun AppScreen(isLoggedIn: Boolean, authViewModel: AuthenticationViewModel? = null, activity: AppCompatActivity? = null) {
     if (!isLoggedIn) {
-        LoginScreen()
+        LoginScreen(authViewModel, activity!!)
     } else {
        MainMenu()
     }
@@ -78,8 +93,9 @@ fun MainMenu() {
 
 }
 
+@ExperimentalCoroutinesApi
 @Composable
-fun LoginScreen() {
+fun LoginScreen(authViewModel: AuthenticationViewModel?, activity: AppCompatActivity) {
     val passwordVisibility = remember { mutableStateOf(false) }
     val createAccount = remember { mutableStateOf(false) }
 
@@ -88,7 +104,7 @@ fun LoginScreen() {
         style = MaterialTheme.typography.h1,
         textAlign = TextAlign.Center,
         modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.container_edge_padding))
+            .padding(dimensionResource(id = R.dimen.edge_padding_10dp))
             .fillMaxWidth()
             .zIndex(1f)
     )
@@ -96,26 +112,47 @@ fun LoginScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)
-            .padding(dimensionResource(id = R.dimen.container_edge_padding)),
+            .background(MaterialTheme.colors.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(id = R.string.login_title),
             style = MaterialTheme.typography.h4,
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.edge_padding_10dp))
         )
+
+        val textState = remember {
+            listOf(
+                mutableStateOf(TextFieldValue()),
+                mutableStateOf(TextFieldValue())
+            )
+        }
+
+        val isError = remember { mutableStateOf(false) }
+        val isLoginEnabled = remember { mutableStateOf(false) }
 
         FieldRow(
             textResourceId = R.string.login_email,
             hintResourceId = R.string.login_email_hint,
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
+            textState = textState[0],
+            onValueChanged = {
+                textState[0].value = it
+
+                if (authViewModel?.validateEmailAddress(it.text) == true) {
+                    isError.value = false
+                    isLoginEnabled.value = true
+                }
+                else {
+                    isError.value = true
+                    isLoginEnabled.value = false
+                }
+            }
         )
 
         Row(
             modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.container_edge_padding))
+                .padding(dimensionResource(id = R.dimen.edge_padding_10dp))
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
@@ -128,135 +165,50 @@ fun LoginScreen() {
                     checkmarkColor = MaterialTheme.colors.onPrimary
                 ),
                 modifier = Modifier
-                    .padding(end = dimensionResource(id = R.dimen.child_edge_padding))
+                    .padding(end = dimensionResource(id = R.dimen.edge_padding_5dp))
             )
             Text(
                 text = stringResource(id = R.string.login_show_password),
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.child_edge_padding))
+                    .padding(start = dimensionResource(id = R.dimen.edge_padding_5dp))
             )
         }
 
         FieldRow(
             textResourceId = R.string.login_password,
             hintResourceId = R.string.login_password_hint,
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding)),
-            showPassword = passwordVisibility.value
+            hideText = !passwordVisibility.value,
+            textState = textState[1],
+            onValueChanged = { textState[1].value = it }
         )
 
         Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding)),
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.edge_padding_10dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = {  },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                content = {
-                    Text(
-                        text = stringResource(id = R.string.button_login),
-                        style = MaterialTheme.typography.button
-                    )
+            ClassicSolitaireButton(
+                isEnabled = isLoginEnabled.value,
+                onClick = {
+                    val resultObserver = Observer<AuthenticationState> {
+                        //todo invalid password - The password is invalid or the user does not have a password.
+                        // todo invalid email - There is no user record corresponding to this identifier. The user may have been deleted.
+                    }
+                    authViewModel?.signIn(textState[0].value.text, textState[1].value.text)//?.observe(activity, resultObserver)
                 },
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.child_edge_padding))
+                text = R.string.button_login
             )
-            Button(
+
+            ClassicSolitaireButton(
                 onClick = { createAccount.value = true },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colors.primary
-                ),
-                content = {
-                    Text(
-                        text = stringResource(id = R.string.button_create_account),
-                        style = MaterialTheme.typography.button,
-                    )
-                },
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.child_edge_padding))
+                text = R.string.button_create_account
             )
         }
 
-        if (createAccount.value) CreateAccount()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun DefaultPreview() {
-    ClassicSolitaireTheme(darkTheme = false) {
-        AppScreen(isLoggedIn = false)
-    }
-}
-
-@Composable
-private fun CreateAccount() {
-    Dialog(onDismissRequest = {  }) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.background)
-            .padding(dimensionResource(id = R.dimen.container_edge_padding)),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
-
-            FieldRow(
-                textResourceId = R.string.create_account_firstname,
-                hintResourceId = R.string.create_account_firstname_hint,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
-            )
-
-            FieldRow(
-                textResourceId = R.string.create_account_lastname,
-                hintResourceId = R.string.create_account_lastname_hint,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
-            )
-
-            FieldRow(
-                textResourceId = R.string.create_account_email,
-                hintResourceId = R.string.create_account_email_hint,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
-            )
-
-            FieldRow(
-                textResourceId = R.string.create_account_password,
-                hintResourceId = R.string.create_account_password_hint,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding))
-            )
-        }
-    }
-}
-
-@Composable
-private fun FieldRow(
-    textResourceId: Int,
-    hintResourceId: Int,
-    modifier: Modifier = Modifier.padding(dimensionResource(id = R.dimen.container_edge_padding)),
-    showPassword: Boolean = false
-) {
-    Row(modifier = modifier) {
-        val textState = remember { mutableStateOf(TextFieldValue()) }
-        Text(
-            text = stringResource(id = textResourceId),
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier.padding(end = dimensionResource(id = R.dimen.child_edge_padding)),
-            textAlign = TextAlign.Center
-        )
-        TextField(
-            value = textState.value,
-            onValueChange = { textState.value = it },
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = MaterialTheme.colors.onPrimary,
-                backgroundColor = MaterialTheme.colors.background,
-                errorIndicatorColor = MaterialTheme.colors.error
-            ),
-            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.child_edge_padding)),
-            placeholder = {
-                Text(
-                    text = stringResource(id = hintResourceId),
-                    style = MaterialTheme.typography.body1
-                )
-            },
-            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation()
+        if (createAccount.value) CreateAccountDialog(
+            authViewModel = authViewModel,
+            state = createAccount,
+            activity = LocalContext.current as AppCompatActivity
         )
     }
 }
