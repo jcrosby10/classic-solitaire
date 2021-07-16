@@ -26,7 +26,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.Observer
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.AuthenticationViewModel
-import com.huntergaming.classicsolitaire.web.RequestState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Composable

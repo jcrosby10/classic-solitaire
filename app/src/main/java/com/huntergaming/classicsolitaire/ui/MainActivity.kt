@@ -34,15 +34,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.zIndex
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Observer
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.compose.ClassicSolitaireButton
 import com.huntergaming.classicsolitaire.ui.compose.CreateAccountDialog
 import com.huntergaming.classicsolitaire.ui.compose.FieldRow
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.classicsolitaire.web.InternetStatus
-import com.huntergaming.classicsolitaire.web.RequestState
+import com.huntergaming.web.InternetStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
@@ -52,7 +50,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var internetStatus: InternetStatus
+    lateinit var internetStatus: com.huntergaming.web.InternetStatus
 
     private val authViewModel: AuthenticationViewModel? by viewModels()
 

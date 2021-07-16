@@ -5,11 +5,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.huntergaming.classicsolitaire.data.Authentication
-import com.huntergaming.classicsolitaire.data.Dao
-import com.huntergaming.classicsolitaire.data.FirebaseAuthentication
-import com.huntergaming.classicsolitaire.data.PlayerDao
-import com.huntergaming.classicsolitaire.model.Player
+import com.huntergaming.gamedata.data.Authentication
+import com.huntergaming.gamedata.data.Dao
+import com.huntergaming.gamedata.data.FirebaseAuthentication
+import com.huntergaming.gamedata.data.PlayerDao
+import com.huntergaming.gamedata.data.model.Player
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,18 +21,5 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class SolitaireModule {
 
-    @Provides
-    fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
 
-    @ExperimentalCoroutinesApi
-    @Singleton
-    @Provides
-    fun provideAuthentication(auth: FirebaseAuthentication): Authentication = auth
-
-    @Singleton
-    @Provides
-    fun providePlayerDao(dao: PlayerDao): Dao<Player> = dao
-
-    @Provides
-    fun provideFirebaseFirestore(): FirebaseFirestore = Firebase.firestore
 }
