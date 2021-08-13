@@ -27,7 +27,7 @@ private val ColombiaBold = FontFamily(
     Font(R.font.colombia, FontWeight.Bold)
 )
 
-val DarkTypography = Typography(
+internal val DarkTypography = Typography(
     h1 = TextStyle(
         fontFamily = AntiCoronaBoldTitle,
         fontSize = 34.sp,
@@ -60,7 +60,7 @@ val DarkTypography = Typography(
     )
 )
 
-val LightTypography = Typography(
+internal val LightTypography = Typography(
     h1 = TextStyle(
         fontFamily = AntiCoronaBoldTitle,
         fontSize = 34.sp,

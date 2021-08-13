@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.huntergaming.classicsolitaire.R
 
 @Composable
-fun FieldRow(
+internal fun FieldRow(
     textResourceId: Int,
     hintResourceId: Int,
     modifier: Modifier = Modifier
