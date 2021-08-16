@@ -1,28 +1,28 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Classic Solitaire</string>
 
-    <string name="login_title">Login to Play</string>
-    <string name="login_email_hint">Enter Your Email</string>
-    <string name="login_password_hint">Enter Your Password</string>
-    <string name="login_password_requirements">Password must be a minimum of 8 characters, at least one upper case letter, at least one lower case letter, at least one number, and at least one special character.</string>
-    <string name="login_show_password">Show Password</string>
-    <string name="login_email">Email : </string>
-    <string name="login_password">Password : </string>
+<!--    <string name="login_title">Login to Play</string>-->
+<!--    <string name="login_email_hint">Enter Your Email</string>-->
+<!--    <string name="login_password_hint">Enter Your Password</string>-->
+<!--    <string name="login_password_requirements">Password must be a minimum of 8 characters, at least one upper case letter, at least one lower case letter, at least one number, and at least one special character.</string>-->
+<!--    <string name="login_show_password">Show Password</string>-->
+<!--    <string name="login_email">Email : </string>-->
+<!--    <string name="login_password">Password : </string>-->
 
-    <string name="create_account_firstname">First Name : </string>
-    <string name="create_account_firstname_hint">Enter Your First Name</string>
-    <string name="create_account_lastname">Last Name : </string>
-    <string name="create_account_lastname_hint">Enter Your Last Name</string>
-    <string name="create_account_email">Email : </string>
-    <string name="create_account_email_hint">Enter Your Email</string>
-    <string name="create_account_password">Password : </string>
-    <string name="create_account_password_hint">Enter Your Password</string>
-    <string name="create_account_create">Create</string>
-    <string name="create_account_title">Confirmation Email</string>
-    <string name="create_account_success_message">We have sent a confirmation to your email. Follow the instructions there.</string>
-    <string name="create_account_error_message">There was an error creating your account. Please try again later. If you continue to have issues please contact us for assistance.</string>
-    <string name="create_account_email_already_in_use">The email you entered has an account associated with it.</string>
-    <string name="create_account_reset_password">Reset Password</string>
+<!--    <string name="create_account_firstname">First Name : </string>-->
+<!--    <string name="create_account_firstname_hint">Enter Your First Name</string>-->
+<!--    <string name="create_account_lastname">Last Name : </string>-->
+<!--    <string name="create_account_lastname_hint">Enter Your Last Name</string>-->
+<!--    <string name="create_account_email">Email : </string>-->
+<!--    <string name="create_account_email_hint">Enter Your Email</string>-->
+<!--    <string name="create_account_password">Password : </string>-->
+<!--    <string name="create_account_password_hint">Enter Your Password</string>-->
+<!--    <string name="create_account_create">Create</string>-->
+<!--    <string name="create_account_title">Confirmation Email</string>-->
+<!--    <string name="create_account_success_message">We have sent a confirmation to your email. Follow the instructions there.</string>-->
+<!--    <string name="create_account_error_message">There was an error creating your account. Please try again later. If you continue to have issues please contact us for assistance.</string>-->
+<!--    <string name="create_account_email_already_in_use">The email you entered has an account associated with it.</string>-->
+<!--    <string name="create_account_reset_password">Reset Password</string>-->
 
     <string name="error_no_internet">You do not seem to have an active internet connection. Please verify that you have a connection to the internet.</string>
 

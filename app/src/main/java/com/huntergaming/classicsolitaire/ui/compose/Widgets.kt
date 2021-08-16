@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.huntergaming.classicsolitaire.R
 
 @Composable
@@ -36,6 +37,31 @@ internal fun ClassicSolitaireButton(
         },
         modifier = Modifier.padding(dimensionResource(id = R.dimen.edge_padding_5dp))
     )
+}
+
+@Composable
+internal fun ClassicSolitaireBodyText() {
+
+}
+
+@Composable
+internal fun ClassicSolitaireHeaderText(text: Int) {
+    Text(
+        text = stringResource(id = text),
+        style = MaterialTheme.typography.h1,
+        color = MaterialTheme.colors.onPrimary,
+        modifier = Modifier
+            .padding(
+                end = dimensionResource(id = R.dimen.edge_padding_5dp),
+                top = dimensionResource(id = R.dimen.edge_padding_5dp)
+            ),
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+internal fun ClassicSolitaireTitleText() {
+
 }
 
 @Composable

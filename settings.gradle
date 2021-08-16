@@ -1,5 +1,0 @@
-
-rootProject.name = "Classic Solitaire"
-include ':app'
-include ':game-data'
-include ':web'
