@@ -1,6 +1,8 @@
 package com.huntergaming.classicsolitaire
 
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,9 +39,13 @@ internal class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
+        parent?.keepScreenOn = true
+        return super.onCreateView(parent, name, context, attrs)
+    }
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-
         if (hasFocus) hideSystemUI()
     }
 
@@ -51,6 +56,8 @@ internal class MainActivity : ComponentActivity() {
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
             View.SYSTEM_UI_FLAG_FULLSCREEN
         )
+
+        actionBar?.hide()
     }
 }
 
@@ -65,13 +72,5 @@ fun ClassicSolitaireNavigation(navController: NavHostController) {
         composable(SPLASH_SCREEN_NAV_ROUTE) { SplashScreen(loadingContent, navController) }
         composable(MAIN_MENU_NAV_ROUTE) { MainMenu() }
         composable(GAME_SCREEN_NAV_ROUTE) { GameScreen() }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ClassicSolitaireTheme {
-        SplashScreen(navController = rememberNavController())
     }
 }

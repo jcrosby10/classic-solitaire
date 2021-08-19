@@ -9,13 +9,49 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.huntergaming.classicsolitaire.R
+import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreviewClassicSolitaireButton() {
+    ClassicSolitaireTheme {
+        ClassicSolitaireButton(onClick = {  }, text = R.string.button_quit)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreviewClassicSolitaireHeaderText() {
+    ClassicSolitaireTheme {
+        ClassicSolitaireHeaderText(modifier = Modifier, text = R.string.app_name)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreviewClassicSolitaireAlertDialog() {
+    ClassicSolitaireTheme {
+        ClassicSolitaireAlertDialog(confirmButton = {}, dismissButton = {}, title = @Composable {}, text = @Composable {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreviewClassicSolitaireCircularProgressIndicator() {
+    ClassicSolitaireTheme {
+        ClassicSolitaireCircularProgressIndicator()
+    }
+}
 
 @Composable
 internal fun ClassicSolitaireButton(
+    modifier: Modifier = Modifier.padding(dimensionResource(id = R.dimen.edge_padding_5dp)),
     onClick: () -> Unit,
     isEnabled: Boolean = true,
     text: Int
@@ -35,7 +71,7 @@ internal fun ClassicSolitaireButton(
                 style = MaterialTheme.typography.button,
             )
         },
-        modifier = Modifier.padding(dimensionResource(id = R.dimen.edge_padding_5dp))
+        modifier = modifier
     )
 }
 
@@ -45,16 +81,14 @@ internal fun ClassicSolitaireBodyText() {
 }
 
 @Composable
-internal fun ClassicSolitaireHeaderText(text: Int) {
+internal fun ClassicSolitaireHeaderText(modifier: Modifier, text: Int) {
     Text(
         text = stringResource(id = text),
         style = MaterialTheme.typography.h1,
         color = MaterialTheme.colors.onPrimary,
         modifier = Modifier
-            .padding(
-                end = dimensionResource(id = R.dimen.edge_padding_5dp),
-                top = dimensionResource(id = R.dimen.edge_padding_5dp)
-            ),
+            .padding(dimensionResource(id = R.dimen.edge_padding_5dp))
+            .composed { modifier },
         textAlign = TextAlign.Center
     )
 }

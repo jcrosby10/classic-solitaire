@@ -8,12 +8,13 @@ plugins {
 val composeVersion = "1.0.1"
 
 android {
-    compileSdk = 30
+    compileSdk = 31
+    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         applicationId = "com.huntergaming.classicsolitaire"
         minSdk = 21
-        targetSdk = 30
+        targetSdk = 31
         versionCode = 1
         versionName = "1.0"
 
@@ -60,10 +61,12 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
     kapt("com.google.dagger:hilt-compiler:2.37")
 
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
+
     val navigationVersion = "2.3.5"
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
-    implementation("androidx.navigation:navigation-compose:2.4.0-alpha06")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha07")
 
     val scopeVersion = "2.3.1"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$scopeVersion") // viewModelScope
