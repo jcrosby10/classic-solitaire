@@ -9,7 +9,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -29,7 +28,10 @@ fun DefaultPreviewClassicSolitaireButton() {
 @Composable
 fun DefaultPreviewClassicSolitaireHeaderText() {
     ClassicSolitaireTheme {
-        ClassicSolitaireHeaderText(modifier = Modifier, text = R.string.app_name)
+        ClassicSolitaireHeaderText(
+            text = R.string.app_name,
+            modifier = Modifier
+        )
     }
 }
 
@@ -81,14 +83,12 @@ internal fun ClassicSolitaireBodyText() {
 }
 
 @Composable
-internal fun ClassicSolitaireHeaderText(modifier: Modifier, text: Int) {
+internal fun ClassicSolitaireHeaderText(text: Int, modifier: Modifier) {
     Text(
         text = stringResource(id = text),
         style = MaterialTheme.typography.h1,
         color = MaterialTheme.colors.onPrimary,
-        modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.edge_padding_5dp))
-            .composed { modifier },
+        modifier = modifier,
         textAlign = TextAlign.Center
     )
 }

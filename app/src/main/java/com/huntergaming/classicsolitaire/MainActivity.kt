@@ -34,7 +34,10 @@ internal class MainActivity : ComponentActivity() {
 
         setContent {
             ClassicSolitaireTheme {
-                ClassicSolitaireNavigation(navController = rememberNavController())
+                ClassicSolitaireNavigation(
+                    navController = rememberNavController(),
+                    activity = this
+                )
             }
         }
     }
@@ -62,15 +65,21 @@ internal class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ClassicSolitaireNavigation(navController: NavHostController) {
+fun ClassicSolitaireNavigation(navController: NavHostController, activity: ComponentActivity) {
     val loadingContent: (suspend () -> Unit)? by rememberSaveable { mutableStateOf(null) }
 
     NavHost(
         navController = navController,
         startDestination = SPLASH_SCREEN_NAV_ROUTE
     ) {
-        composable(SPLASH_SCREEN_NAV_ROUTE) { SplashScreen(loadingContent, navController) }
-        composable(MAIN_MENU_NAV_ROUTE) { MainMenu() }
+        composable(SPLASH_SCREEN_NAV_ROUTE) {
+            SplashScreen(
+                loadContent = loadingContent,
+                navController = navController
+            )
+        }
+
+        composable(MAIN_MENU_NAV_ROUTE) { MainMenu(activity = activity) }
         composable(GAME_SCREEN_NAV_ROUTE) { GameScreen() }
     }
 }

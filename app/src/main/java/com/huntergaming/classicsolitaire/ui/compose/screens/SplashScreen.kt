@@ -60,6 +60,9 @@ internal fun SplashScreen(loadContent: (suspend () -> Unit)? = null, navControll
             .background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center,
     ) {
-        ClassicSolitaireHeaderText(modifier = Modifier, text = R.string.app_name)
+        ClassicSolitaireHeaderText(
+            modifier = Modifier,
+            text = R.string.app_name
+        )
     }
 }
