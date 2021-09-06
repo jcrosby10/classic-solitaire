@@ -15,9 +15,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import com.huntergaming.classicsolitaire.R
-import com.huntergaming.classicsolitaire.ui.compose.ClassicSolitaireButton
-import com.huntergaming.classicsolitaire.ui.compose.ClassicSolitaireHeaderText
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
+import com.huntergaming.composables.HunterGamingButton
+import com.huntergaming.composables.HunterGamingHeaderText
 
 @Preview(showBackground = true)
 @Composable
@@ -36,7 +36,7 @@ internal fun MainMenu(activity: ComponentActivity? = null) {
     ) {
         val (mainMenu, playButton, gameName) = createRefs()
 
-        ClassicSolitaireHeaderText(
+        HunterGamingHeaderText(
             modifier = Modifier
                 .padding(top = dimensionResource(id = R.dimen.edge_padding_15dp))
                 .constrainAs(gameName) {
@@ -58,18 +58,18 @@ internal fun MainMenu(activity: ComponentActivity? = null) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
         ) {
-            ClassicSolitaireButton(
+            HunterGamingButton(
                 onClick = {  },
-                text = R.string.button_settings// difficulty (easy,medium,hard), sfx, audio, number of decks (1,2,3), deck background, card shapes
+                text = R.string.button_settings
             )
 
-            ClassicSolitaireButton(
+            HunterGamingButton(
                 onClick = { ActivityCompat.finishAffinity(activity!!) },
                 text = R.string.button_quit
             )
         }
 
-        ClassicSolitaireButton(
+        HunterGamingButton(
             onClick = {  },
             text = R.string.button_play,
             modifier = Modifier

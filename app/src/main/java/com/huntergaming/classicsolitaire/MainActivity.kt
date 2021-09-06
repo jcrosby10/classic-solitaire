@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -34,10 +33,7 @@ internal class MainActivity : ComponentActivity() {
 
         setContent {
             ClassicSolitaireTheme {
-                ClassicSolitaireNavigation(
-                    navController = rememberNavController(),
-                    activity = this
-                )
+                ClassicSolitaireNavigation(activity = this)
             }
         }
     }
@@ -65,18 +61,17 @@ internal class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ClassicSolitaireNavigation(navController: NavHostController, activity: ComponentActivity) {
+fun ClassicSolitaireNavigation(activity: ComponentActivity) {
     val loadingContent: (suspend () -> Unit)? by rememberSaveable { mutableStateOf(null) }
+
+    val navController = rememberNavController()
 
     NavHost(
         navController = navController,
         startDestination = SPLASH_SCREEN_NAV_ROUTE
     ) {
         composable(SPLASH_SCREEN_NAV_ROUTE) {
-            SplashScreen(
-                loadContent = loadingContent,
-                navController = navController
-            )
+            SplashScreen(loadContent = loadingContent)
         }
 
         composable(MAIN_MENU_NAV_ROUTE) { MainMenu(activity = activity) }

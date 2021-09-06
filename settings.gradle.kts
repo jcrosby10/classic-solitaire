@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Classic Solitaire"
 include(":app")
+include(":composables")
