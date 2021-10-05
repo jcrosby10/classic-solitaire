@@ -11,10 +11,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.huntergaming.classicsolitaire.BuildConfig
 import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
-import com.huntergaming.classicsolitaire.navFlow
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 import com.huntergaming.composables.HunterGamingHeaderText
 import kotlinx.coroutines.Dispatchers
@@ -26,17 +27,22 @@ private val time: Long = if (BuildConfig.DEBUG) 1000 else 5000
 @Composable
 private fun DefaultPreviewSplashScreen() {
     ClassicSolitaireTheme {
-        SplashScreen()
+        SplashScreen(
+            navController = rememberNavController()
+        )
     }
 }
 
 @Composable
-internal fun SplashScreen(loadContent: (suspend () -> Unit)? = null) {
+internal fun SplashScreen(
+    navController: NavHostController,
+    loadContent: (suspend () -> Unit)? = null
+) {
     if (loadContent == null) {
         val timer = object: CountDownTimer(time, 1000) {
             override fun onTick(millisUntilFinished: Long) {}
 
-            override fun onFinish() { navFlow.value = ComposableRoutes.MAIN_MENU_NAV.route }
+            override fun onFinish() { navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route) }
         }
         timer.start()
     }
@@ -47,7 +53,7 @@ internal fun SplashScreen(loadContent: (suspend () -> Unit)? = null) {
         LaunchedEffect(true) {
             scope.launch(Dispatchers.Main) {
                 loadContent()
-                navFlow.value = ComposableRoutes.GAME_SCREEN_NAV.route
+                navController.navigate(ComposableRoutes.GAME_SCREEN_NAV.route)
             }
         }
     }

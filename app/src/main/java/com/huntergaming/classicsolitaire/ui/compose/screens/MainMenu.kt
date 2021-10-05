@@ -9,30 +9,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
-import com.huntergaming.classicsolitaire.navFlow
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 import com.huntergaming.composables.HunterGamingButton
 import com.huntergaming.composables.HunterGamingColumn
 import com.huntergaming.composables.HunterGamingHeaderText
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlin.system.exitProcess
 
-private val quitFlow_ = MutableStateFlow(false)
-internal val quitFlow: Flow<Boolean> = quitFlow_.asStateFlow()
+private const val USER_QUIT = 0
 
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreviewMainMenu() {
     ClassicSolitaireTheme {
-        MainMenu()
+        MainMenu(
+            navController = rememberNavController()
+        )
     }
 }
 
 @Composable
-internal fun MainMenu() {
+internal fun MainMenu(
+    navController: NavHostController
+) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -63,13 +65,13 @@ internal fun MainMenu() {
                 )
         ) {
             HunterGamingButton(
-                onClick = { navFlow.value = ComposableRoutes.SETTINGS_MENU_NAV.route },
+                onClick = { navController.navigate(ComposableRoutes.SETTINGS_MENU_NAV.route) },
                 text = R.string.button_settings,
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
             )
 
             HunterGamingButton(
-                onClick = { quitFlow_.value = (true) },
+                onClick = { exitProcess(USER_QUIT) },
                 text = R.string.button_quit,
                 modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_medium))
             )

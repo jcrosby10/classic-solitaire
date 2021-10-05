@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,19 +18,8 @@ import com.huntergaming.classicsolitaire.ui.compose.screens.GameScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.MainMenu
 import com.huntergaming.classicsolitaire.ui.compose.screens.SettingsScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.SplashScreen
-import com.huntergaming.classicsolitaire.ui.compose.screens.quitFlow
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.launch
-import kotlin.system.exitProcess
-
-val navFlow = MutableStateFlow("")
-
-private const val USER_QUIT = 0
 
 @AndroidEntryPoint
 internal class MainActivity : ComponentActivity() {
@@ -44,18 +32,10 @@ internal class MainActivity : ComponentActivity() {
         setContent {
             ClassicSolitaireTheme {
                 val navController = rememberNavController()
-                ClassicSolitaireNavigation(navController)
-
-                lifecycleScope.launchWhenResumed {
-                    navFlow.filterNot { it == "" }.collect {
-                        navController.navigate(it)
-                    }
-                }
+                ClassicSolitaireNavigation(
+                    navController = navController
+                )
             }
-        }
-
-        lifecycleScope.launch {
-            quitFlow.filter { it }.collect { exitProcess(USER_QUIT) }
         }
     }
 
@@ -89,9 +69,28 @@ private fun ClassicSolitaireNavigation(navController: NavHostController) {
         navController = navController,
         startDestination = ComposableRoutes.SPLASH_SCREEN_NAV.route
     ) {
-        composable(ComposableRoutes.SPLASH_SCREEN_NAV.route) { ClassicSolitaireTheme { SplashScreen(loadContent = loadingContent) } }
-        composable(ComposableRoutes.MAIN_MENU_NAV.route) { ClassicSolitaireTheme { MainMenu() } }
-        composable(ComposableRoutes.SETTINGS_MENU_NAV.route) { ClassicSolitaireTheme { SettingsScreen(navController = navController) } }
+        composable(ComposableRoutes.SPLASH_SCREEN_NAV.route) {
+            ClassicSolitaireTheme {
+                SplashScreen(
+                    navController = navController,
+                    loadContent = loadingContent
+                )
+            }
+        }
+        composable(ComposableRoutes.MAIN_MENU_NAV.route) {
+            ClassicSolitaireTheme {
+                MainMenu(
+                    navController = navController
+                )
+            }
+        }
+        composable(ComposableRoutes.SETTINGS_MENU_NAV.route) {
+            ClassicSolitaireTheme {
+                SettingsScreen(
+                    navController = navController
+                )
+            }
+        }
         composable(ComposableRoutes.GAME_SCREEN_NAV.route) { ClassicSolitaireTheme { GameScreen() } }
     }
 }
