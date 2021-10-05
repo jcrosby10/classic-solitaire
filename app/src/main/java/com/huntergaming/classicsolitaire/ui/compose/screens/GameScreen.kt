@@ -6,7 +6,7 @@ import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreviewGameScreen() {
+private fun DefaultPreviewGameScreen() {
     ClassicSolitaireTheme {
         GameScreen()
     }

@@ -1,34 +1,38 @@
 package com.huntergaming.classicsolitaire.ui.compose.screens
 
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.app.ActivityCompat
+import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
+import com.huntergaming.classicsolitaire.navFlow
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 import com.huntergaming.composables.HunterGamingButton
+import com.huntergaming.composables.HunterGamingColumn
 import com.huntergaming.composables.HunterGamingHeaderText
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+private val quitFlow_ = MutableStateFlow(false)
+internal val quitFlow: Flow<Boolean> = quitFlow_.asStateFlow()
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreviewMainMenu() {
+private fun DefaultPreviewMainMenu() {
     ClassicSolitaireTheme {
         MainMenu()
     }
 }
 
 @Composable
-internal fun MainMenu(activity: ComponentActivity? = null) {
+internal fun MainMenu() {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -38,34 +42,36 @@ internal fun MainMenu(activity: ComponentActivity? = null) {
 
         HunterGamingHeaderText(
             modifier = Modifier
-                .padding(top = dimensionResource(id = R.dimen.edge_padding_15dp))
-                .constrainAs(gameName) {
+                .padding(top = dimensionResource(id = R.dimen.padding_large))
+                .constrainAs(ref = gameName) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    top.linkTo(gameName.top)
+                    top.linkTo(parent.top)
                 },
             text = R.string.app_name
         )
 
-        Column(
-        modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.edge_padding_5dp))
-            .constrainAs(mainMenu) {
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            },
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center
+        HunterGamingColumn(
+            modifier = Modifier
+                .constrainAs(ref = mainMenu) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
+                .padding(
+                    start = dimensionResource(R.dimen.padding_large)
+                )
         ) {
             HunterGamingButton(
-                onClick = {  },
-                text = R.string.button_settings
+                onClick = { navFlow.value = ComposableRoutes.SETTINGS_MENU_NAV.route },
+                text = R.string.button_settings,
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
             )
 
             HunterGamingButton(
-                onClick = { ActivityCompat.finishAffinity(activity!!) },
-                text = R.string.button_quit
+                onClick = { quitFlow_.value = (true) },
+                text = R.string.button_quit,
+                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_medium))
             )
         }
 
@@ -73,7 +79,7 @@ internal fun MainMenu(activity: ComponentActivity? = null) {
             onClick = {  },
             text = R.string.button_play,
             modifier = Modifier
-                .constrainAs(playButton) {
+                .constrainAs(ref = playButton) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)

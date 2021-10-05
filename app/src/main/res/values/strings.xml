@@ -11,4 +11,25 @@
     <string name="button_play">PLAY</string>
     <string name="button_settings">SETTINGS</string>
     <string name="button_quit">QUIT</string>
+    <string name="button_back">BACK</string>
+
+    <string name="audio">Audio</string>
+    <string name="sfx">SFX</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="number_of_decks">Number of Decks</string>
+    <string name="deck_background">Deck</string>
+
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+
+    <array name="content_descriptions_card_backs">
+        <item>A red card back</item>
+        <item>A yellow card back</item>
+        <item>A orange card back</item>
+        <item>A dark red card back</item>
+        <item>A blue card back</item>
+        <item>A dark blue card back</item>
+    </array>
 </resources>

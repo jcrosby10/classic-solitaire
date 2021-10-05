@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="edge_padding_5dp">5dp</dimen>
-    <dimen name="edge_padding_10dp">10dp</dimen>
-    <dimen name="edge_padding_15dp">15dp</dimen>
+    <dimen name="padding_none">0dp</dimen>
+    <dimen name="padding_small">5dp</dimen>
+    <dimen name="padding_medium">10dp</dimen>
+    <dimen name="padding_large">15dp</dimen>
+    <dimen name="padding_xlarge">50dp</dimen>
+    <dimen name="padding_xxlarge">75dp</dimen>
+
+    <dimen name="width_300">300dp</dimen>
 </resources>
