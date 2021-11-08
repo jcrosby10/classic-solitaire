@@ -8,4 +8,7 @@
     <dimen name="padding_xxlarge">75dp</dimen>
 
     <dimen name="width_300">300dp</dimen>
+
+    <dimen name="image_radio_width">59dp</dimen>
+    <dimen name="image_radio_height">82dp</dimen>
 </resources>

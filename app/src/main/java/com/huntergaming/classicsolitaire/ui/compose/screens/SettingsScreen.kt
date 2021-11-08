@@ -186,13 +186,12 @@ private fun GameSettings() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    bottom = dimensionResource(R.dimen.padding_medium)
+                    bottom = dimensionResource(R.dimen.padding_medium),
+                    start = dimensionResource(R.dimen.padding_large)
                 )
         ) {
             HunterGamingTitleText(
-                text = R.string.number_of_decks,
-                modifier = Modifier
-                    .weight(1f)
+                text = R.string.number_of_decks
             )
 
             val numberOfDecksValues = listOf(
@@ -212,13 +211,12 @@ private fun GameSettings() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    top = dimensionResource(R.dimen.padding_medium)
+                    top = dimensionResource(R.dimen.padding_medium),
+                    start = dimensionResource(R.dimen.padding_large)
                 )
         ) {
             HunterGamingTitleText(
-                text = R.string.deck_background,
-                modifier = Modifier
-                    .weight(1f)
+                text = R.string.deck_background
             )
 
             HunterGamingHorizontalImageRadioButton(
@@ -230,6 +228,8 @@ private fun GameSettings() {
                     R.drawable.card_back_blue,
                     R.drawable.card_back_dark_blue
                 ),
+                imageWidth = com.huntergaming.composables.R.dimen.image_radio_width,
+                imageHeight = com.huntergaming.composables.R.dimen.image_radio_height,
                 contentDescriptions = stringArrayResource(R.array.content_descriptions_card_backs).toList(),
                 onSelect = { },
                 selectedIndex = 0
