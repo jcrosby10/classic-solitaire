@@ -9,20 +9,32 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.huntergaming.classicsolitaire.ui.compose.screens.GameScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.MainMenu
 import com.huntergaming.classicsolitaire.ui.compose.screens.SettingsScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.SplashScreen
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
+import com.huntergaming.composables.HunterGamingAlertDialog
+import com.huntergaming.composables.HunterGamingBodyText
+import com.huntergaming.composables.HunterGamingButton
+import com.huntergaming.composables.HunterGamingTitleText
+import com.huntergaming.gamedata.preferences.HunterGamingPreferences
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@ExperimentalPagerApi
 @AndroidEntryPoint
 internal class MainActivity : ComponentActivity() {
+
+    @Inject
+    internal lateinit var playerSettings: HunterGamingPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +42,49 @@ internal class MainActivity : ComponentActivity() {
         hideSystemUI()
 
         setContent {
-            ClassicSolitaireTheme {
-                val navController = rememberNavController()
-                ClassicSolitaireNavigation(
-                    navController = navController
+            val showDialog = remember { mutableStateOf(playerSettings.shownDataConsent()) }
+
+            if (showDialog.value) {
+                HunterGamingAlertDialog(
+                    dismissOnBackPress = false,
+                    dismissOnClickOutside = false,
+                    confirmButton = {
+                        HunterGamingButton(
+                            onClick = {
+                                showDialog.value = false
+                                playerSettings.setCanUseFirebase(true)
+                            },
+                            text = R.string.button_yes
+                        )
+                    },
+                    dismissButton = {
+                        HunterGamingButton(
+                            onClick = {
+                                showDialog.value = false
+                                playerSettings.setCanUseFirebase(false)
+                            },
+                            text = R.string.button_no
+                        )
+                    },
+                    title = {
+                        HunterGamingTitleText(
+                            text = R.string.data_consent
+                        )
+                    },
+                    text = {
+                        HunterGamingBodyText(
+                            text = R.string.data_consent_description
+                        )
+                    }
                 )
+
+                playerSettings.updateDataConsent()
             }
+
+            val navController = rememberNavController()
+            ClassicSolitaireNavigation(
+                navController = navController
+            )
         }
     }
 
@@ -61,6 +110,7 @@ internal class MainActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalPagerApi
 @Composable
 private fun ClassicSolitaireNavigation(navController: NavHostController) {
     val loadingContent: (suspend () -> Unit)? by rememberSaveable { mutableStateOf(null) }
@@ -77,6 +127,7 @@ private fun ClassicSolitaireNavigation(navController: NavHostController) {
                 )
             }
         }
+
         composable(ComposableRoutes.MAIN_MENU_NAV.route) {
             ClassicSolitaireTheme {
                 MainMenu(
@@ -84,6 +135,7 @@ private fun ClassicSolitaireNavigation(navController: NavHostController) {
                 )
             }
         }
+
         composable(ComposableRoutes.SETTINGS_MENU_NAV.route) {
             ClassicSolitaireTheme {
                 SettingsScreen(

@@ -12,13 +12,22 @@
     <string name="button_settings">SETTINGS</string>
     <string name="button_quit">QUIT</string>
     <string name="button_back">BACK</string>
+    <string name="button_yes">YES</string>
+    <string name="button_no">NO</string>
 
     <string name="audio">Audio</string>
+    <string name="data_consent">Data Consent</string>
+    <string name="data_consent_description">Do you agree to store all your data online in our Google Firestore database? If you choose no, data will be stored locally and might be lost if you uninstall the game or get a new device.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="sfx">SFX</string>
     <string name="on">On</string>
     <string name="off">Off</string>
     <string name="number_of_decks">Number of Decks</string>
     <string name="deck_background">Deck</string>
+    <string name="sound">Sound</string>
+    <string name="game">Game</string>
+    <string name="privacy">Privacy</string>
 
     <string name="one">1</string>
     <string name="two">2</string>

@@ -8,15 +8,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
@@ -26,16 +30,21 @@ import com.huntergaming.composables.HunterGamingHorizontalImageRadioButton
 import com.huntergaming.composables.HunterGamingHorizontalRadioButton
 import com.huntergaming.composables.HunterGamingHorizontalSlider
 import com.huntergaming.composables.HunterGamingRow
+import com.huntergaming.composables.HunterGamingTabs
 import com.huntergaming.composables.HunterGamingTitleText
 
-@Preview(showBackground = true, device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
+@ExperimentalPagerApi
+@Preview(showBackground = true, widthDp = 720, heightDp = 360)
 @Composable
 private fun DefaultPreviewSettingsScreen() {
     ClassicSolitaireTheme {
-        SettingsScreen(rememberNavController())
+        SettingsScreen(
+            navController = rememberNavController()
+        )
     }
 }
 
+@ExperimentalPagerApi
 @Composable
 internal fun SettingsScreen(navController: NavHostController) {
     ConstraintLayout(
@@ -53,90 +62,137 @@ internal fun SettingsScreen(navController: NavHostController) {
                 .padding(
                     start = dimensionResource(R.dimen.padding_large),
                     bottom = dimensionResource(R.dimen.padding_large)
+                )
+                .zIndex(
+                    zIndex = 5f
                 ),
             onClick = { navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route) },
             text = R.string.button_back
         )
     }
 
+    val tabIcons = remember {
+        mutableStateOf(
+            listOf(
+                R.drawable.sound_on,
+                R.drawable.controller,
+                R.drawable.lock
+            )
+        )
+    }
+
+    val tabTitles = remember {
+        mutableStateOf(
+            listOf(
+                R.string.sound,
+                R.string.game,
+                R.string.privacy
+            )
+        )
+    }
+
+    HunterGamingTabs(
+        tabIcons = tabIcons.value,
+        tabTitles = tabTitles.value,
+        pagerState = rememberPagerState(
+            pageCount = tabIcons.value.size,
+            initialOffscreenLimit = 2,
+            infiniteLoop = true,
+            initialPage = 1,
+        ),
+        { SoundSettings() },  { GameSettings() }, { PrivacySettings() }
+    )
+}
+
+@Composable
+private fun SoundSettings() {
+    val onOff = listOf(
+        stringResource(R.string.on),
+        stringResource(R.string.off)
+    )
+
+    HunterGamingRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = dimensionResource(R.dimen.padding_large)
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        HunterGamingTitleText(
+            text = R.string.audio,
+            modifier = Modifier
+                .weight(1f)
+        )
+
+        HunterGamingHorizontalRadioButton(
+            texts = onOff,
+            onSelect = { },
+            selectedIndex = 0
+        )
+
+        HunterGamingHorizontalSlider(
+            modifier = Modifier
+                .requiredWidth(dimensionResource(R.dimen.width_300))
+                .padding(
+                    start = dimensionResource(R.dimen.padding_medium),
+                    end = dimensionResource(R.dimen.padding_medium)
+                ),
+            initialValue = .8f,
+            onValueChange = { },
+        )
+    }
+
+    HunterGamingRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = dimensionResource(R.dimen.padding_large)
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        HunterGamingTitleText(
+            text = R.string.sfx,
+            modifier = Modifier
+                .weight(1f)
+        )
+
+        HunterGamingHorizontalRadioButton(
+            texts = onOff,
+            onSelect = { },
+            selectedIndex = 0
+        )
+
+        HunterGamingHorizontalSlider(
+            modifier = Modifier
+                .requiredWidth(dimensionResource(R.dimen.width_300))
+                .padding(
+                    start = dimensionResource(R.dimen.padding_medium),
+                    end = dimensionResource(R.dimen.padding_medium)
+                ),
+            initialValue = .8f,
+            onValueChange = { },
+        )
+    }
+}
+
+@Composable
+private fun GameSettings() {
     HunterGamingColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val onOff = listOf(
-            stringResource(R.string.on),
-            stringResource(R.string.off)
-        )
-
-        HunterGamingRow(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            HunterGamingTitleText(
-                text = R.string.audio,
-                modifier = Modifier
-                    .weight(1f)
-            )
-
-            HunterGamingHorizontalRadioButton(
-                texts = onOff,
-                onSelect = { },
-                selectedIndex = 0
-            )
-
-            HunterGamingHorizontalSlider(
-                modifier = Modifier
-                    .requiredWidth(dimensionResource(R.dimen.width_300))
-                    .padding(
-                        start = dimensionResource(R.dimen.padding_medium),
-                        end = dimensionResource(R.dimen.padding_medium)
-                    ),
-                initialValue = .8f,
-                onValueChange = { },
-            )
-        }
-
-        HunterGamingRow(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            HunterGamingTitleText(
-                text = R.string.sfx,
-                modifier = Modifier
-                    .weight(1f)
-            )
-
-            HunterGamingHorizontalRadioButton(
-                texts = onOff,
-                onSelect = { },
-                selectedIndex = 0
-            )
-
-            HunterGamingHorizontalSlider(
-                modifier = Modifier
-                    .requiredWidth(dimensionResource(R.dimen.width_300))
-                    .padding(
-                        start = dimensionResource(R.dimen.padding_medium),
-                        end = dimensionResource(R.dimen.padding_medium)
-                    ),
-                initialValue = .8f,
-                onValueChange = { },
-            )
-        }
-
         HunterGamingRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    top = dimensionResource(R.dimen.padding_medium),
                     bottom = dimensionResource(R.dimen.padding_medium)
-                ),
-            horizontalArrangement = Arrangement.SpaceAround
+                )
         ) {
             HunterGamingTitleText(
-                text = R.string.number_of_decks
+                text = R.string.number_of_decks,
+                modifier = Modifier
+                    .weight(1f)
             )
 
             val numberOfDecksValues = listOf(
@@ -155,11 +211,14 @@ internal fun SettingsScreen(navController: NavHostController) {
         HunterGamingRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = dimensionResource(R.dimen.padding_medium)),
-            horizontalArrangement = Arrangement.SpaceAround
+                .padding(
+                    top = dimensionResource(R.dimen.padding_medium)
+                )
         ) {
             HunterGamingTitleText(
-                text = R.string.deck_background
+                text = R.string.deck_background,
+                modifier = Modifier
+                    .weight(1f)
             )
 
             HunterGamingHorizontalImageRadioButton(
@@ -176,5 +235,34 @@ internal fun SettingsScreen(navController: NavHostController) {
                 selectedIndex = 0
             )
         }
+    }
+}
+
+@Composable
+private fun PrivacySettings() {
+    HunterGamingRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = dimensionResource(R.dimen.padding_large),
+                end = dimensionResource(R.dimen.padding_large)
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween
+
+    ) {
+        val yesNo = listOf(
+            stringResource(R.string.yes),
+            stringResource(R.string.no)
+        )
+
+        HunterGamingTitleText(
+            text = R.string.data_consent
+        )
+
+        HunterGamingHorizontalRadioButton(
+            texts = yesNo,
+            onSelect = { },
+            selectedIndex = 1
+        )
     }
 }

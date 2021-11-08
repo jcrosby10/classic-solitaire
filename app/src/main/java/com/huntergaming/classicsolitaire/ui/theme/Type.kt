@@ -53,6 +53,13 @@ internal val DarkTypography = Typography(
         fontSize = 18.sp,
         color = OnDark
     ),
+    caption = TextStyle(
+        fontFamily = Colombia,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        letterSpacing = 0.4.sp,
+        color = OnDark
+    ),
     button = TextStyle(
         fontFamily = ColombiaBold,
         fontSize = 25.sp,
@@ -84,6 +91,13 @@ internal val LightTypography = Typography(
     body1 = TextStyle(
         fontFamily = Colombia,
         fontSize = 16.sp,
+        color = OnLight
+    ),
+    caption = TextStyle(
+        fontFamily = Colombia,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        letterSpacing = 0.4.sp,
         color = OnLight
     ),
     button = TextStyle(

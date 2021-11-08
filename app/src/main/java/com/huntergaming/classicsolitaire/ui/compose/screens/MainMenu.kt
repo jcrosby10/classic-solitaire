@@ -21,7 +21,7 @@ import kotlin.system.exitProcess
 
 private const val USER_QUIT = 0
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 720, heightDp = 360)
 @Composable
 private fun DefaultPreviewMainMenu() {
     ClassicSolitaireTheme {

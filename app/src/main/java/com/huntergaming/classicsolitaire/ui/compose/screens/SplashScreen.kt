@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 private val time: Long = if (BuildConfig.DEBUG) 1000 else 5000
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 720, heightDp = 360)
 @Composable
 private fun DefaultPreviewSplashScreen() {
     ClassicSolitaireTheme {
