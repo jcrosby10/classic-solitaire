@@ -47,30 +47,6 @@ private fun DefaultPreviewSettingsScreen() {
 @ExperimentalPagerApi
 @Composable
 internal fun SettingsScreen(navController: NavHostController) {
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.background)
-    ) {
-        val (back) = createRefs()
-        HunterGamingButton(
-            modifier = Modifier
-                .constrainAs(back) {
-                    start.linkTo(parent.start)
-                    bottom.linkTo(parent.bottom)
-                }
-                .padding(
-                    start = dimensionResource(R.dimen.padding_large),
-                    bottom = dimensionResource(R.dimen.padding_large)
-                )
-                .zIndex(
-                    zIndex = 5f
-                ),
-            onClick = { navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route) },
-            text = R.string.button_back
-        )
-    }
-
     val tabIcons = remember {
         mutableStateOf(
             listOf(
@@ -102,6 +78,32 @@ internal fun SettingsScreen(navController: NavHostController) {
         ),
         { SoundSettings() },  { GameSettings() }, { PrivacySettings() }
     )
+
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .zIndex(
+                zIndex = -1f
+            )
+    ) {
+        val (back) = createRefs()
+        HunterGamingButton(
+            modifier = Modifier
+                .constrainAs(back) {
+                    start.linkTo(parent.start)
+                    bottom.linkTo(parent.bottom)
+                }
+                .padding(
+                    start = dimensionResource(R.dimen.padding_large),
+                    bottom = dimensionResource(R.dimen.padding_large)
+                )
+                .zIndex(
+                    zIndex = 1f
+                ),
+            onClick = { navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route) },
+            text = R.string.button_back
+        )
+    }
 }
 
 @Composable
@@ -111,68 +113,75 @@ private fun SoundSettings() {
         stringResource(R.string.off)
     )
 
-    HunterGamingRow(
+    HunterGamingColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = dimensionResource(R.dimen.padding_large)
-            ),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
     ) {
-        HunterGamingTitleText(
-            text = R.string.audio,
-            modifier = Modifier
-                .weight(1f)
-        )
 
-        HunterGamingHorizontalRadioButton(
-            texts = onOff,
-            onSelect = { },
-            selectedIndex = 0
-        )
-
-        HunterGamingHorizontalSlider(
+        HunterGamingRow(
             modifier = Modifier
-                .requiredWidth(dimensionResource(R.dimen.width_300))
+                .fillMaxWidth()
                 .padding(
-                    start = dimensionResource(R.dimen.padding_medium),
-                    end = dimensionResource(R.dimen.padding_medium)
+                    start = dimensionResource(R.dimen.padding_large)
                 ),
-            initialValue = .8f,
-            onValueChange = { },
-        )
-    }
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            HunterGamingTitleText(
+                text = R.string.audio,
+                modifier = Modifier
+                    .weight(1f)
+            )
 
-    HunterGamingRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = dimensionResource(R.dimen.padding_large)
-            ),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        HunterGamingTitleText(
-            text = R.string.sfx,
+            HunterGamingHorizontalRadioButton(
+                texts = onOff,
+                onSelect = { },
+                selectedIndex = 0
+            )
+
+            HunterGamingHorizontalSlider(
+                modifier = Modifier
+                    .requiredWidth(dimensionResource(R.dimen.width_300))
+                    .padding(
+                        start = dimensionResource(R.dimen.padding_medium),
+                        end = dimensionResource(R.dimen.padding_medium)
+                    ),
+                initialValue = .8f,
+                onValueChange = { },
+            )
+        }
+
+        HunterGamingRow(
             modifier = Modifier
-                .weight(1f)
-        )
-
-        HunterGamingHorizontalRadioButton(
-            texts = onOff,
-            onSelect = { },
-            selectedIndex = 0
-        )
-
-        HunterGamingHorizontalSlider(
-            modifier = Modifier
-                .requiredWidth(dimensionResource(R.dimen.width_300))
+                .fillMaxWidth()
                 .padding(
-                    start = dimensionResource(R.dimen.padding_medium),
-                    end = dimensionResource(R.dimen.padding_medium)
+                    start = dimensionResource(R.dimen.padding_large)
                 ),
-            initialValue = .8f,
-            onValueChange = { },
-        )
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            HunterGamingTitleText(
+                text = R.string.sfx,
+                modifier = Modifier
+                    .weight(1f)
+            )
+
+            HunterGamingHorizontalRadioButton(
+                texts = onOff,
+                onSelect = { },
+                selectedIndex = 0
+            )
+
+            HunterGamingHorizontalSlider(
+                modifier = Modifier
+                    .requiredWidth(dimensionResource(R.dimen.width_300))
+                    .padding(
+                        start = dimensionResource(R.dimen.padding_medium),
+                        end = dimensionResource(R.dimen.padding_medium)
+                    ),
+                initialValue = .8f,
+                onValueChange = { },
+            )
+        }
     }
 }
 
@@ -181,6 +190,7 @@ private fun GameSettings() {
     HunterGamingColumn(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colors.background)
     ) {
         HunterGamingRow(
             modifier = Modifier
@@ -242,7 +252,8 @@ private fun GameSettings() {
 private fun PrivacySettings() {
     HunterGamingRow(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
             .padding(
                 start = dimensionResource(R.dimen.padding_large),
                 end = dimensionResource(R.dimen.padding_large)
