@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,16 +26,13 @@ import com.huntergaming.composables.HunterGamingAlertDialog
 import com.huntergaming.composables.HunterGamingBodyText
 import com.huntergaming.composables.HunterGamingButton
 import com.huntergaming.composables.HunterGamingTitleText
-import com.huntergaming.gamedata.preferences.HunterGamingPreferences
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @ExperimentalPagerApi
 @AndroidEntryPoint
 internal class MainActivity : ComponentActivity() {
 
-    @Inject
-    internal lateinit var playerSettings: HunterGamingPreferences
+    private val preferencesViewModel: PreferencesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +40,7 @@ internal class MainActivity : ComponentActivity() {
         hideSystemUI()
 
         setContent {
-            val showDialog = remember { mutableStateOf(playerSettings.shownDataConsent()) }
+            val showDialog = remember { mutableStateOf(preferencesViewModel.shownDataConsent()) }
 
             if (showDialog.value) {
                 HunterGamingAlertDialog(
@@ -52,7 +50,7 @@ internal class MainActivity : ComponentActivity() {
                         HunterGamingButton(
                             onClick = {
                                 showDialog.value = false
-                                playerSettings.setCanUseFirebase(true)
+                                preferencesViewModel.setCanUseFirebase(true)
                             },
                             text = R.string.button_yes
                         )
@@ -61,7 +59,7 @@ internal class MainActivity : ComponentActivity() {
                         HunterGamingButton(
                             onClick = {
                                 showDialog.value = false
-                                playerSettings.setCanUseFirebase(false)
+                                preferencesViewModel.setCanUseFirebase(false)
                             },
                             text = R.string.button_no
                         )
@@ -78,7 +76,7 @@ internal class MainActivity : ComponentActivity() {
                     }
                 )
 
-                playerSettings.updateDataConsent()
+                preferencesViewModel.updateDataConsent()
             }
 
             val navController = rememberNavController()
