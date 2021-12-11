@@ -15,19 +15,16 @@ import javax.inject.Singleton
 internal interface PlayerSettingsDao : HunterGamingDao<PlayerSettings>, HunterGamingMigrateDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    override suspend fun create(data: PlayerSettings)
+    override suspend fun create(data: PlayerSettings): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    override suspend fun update(data: PlayerSettings)
+    override suspend fun update(data: PlayerSettings): Int
 
     @Query("SELECT * FROM player_settings")
     override suspend fun read(): PlayerSettings
 
-    override suspend fun migrateDataToFirestore() {
+    override suspend fun migrateData() {
+        // migrate then delete
         TODO("Migrate from Room to Firestore")
-    }
-
-    override suspend fun migrateDataToRoom() {
-        TODO("Migrate data from Firestore to Room")
     }
 }
