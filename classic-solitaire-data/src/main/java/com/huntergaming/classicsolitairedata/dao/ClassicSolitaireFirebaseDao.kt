@@ -36,12 +36,8 @@ internal class ClassicSolitaireFirebaseDao @Inject constructor(
         success
     }
 
-    override suspend fun migrateDataToFirestore() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun migrateDataToRoom() {
-        TODO("Not yet implemented")
+    override suspend fun migrateData() {
+        TODO("Migrate from Firebase to Room")
     }
 }
 
