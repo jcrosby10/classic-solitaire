@@ -31,29 +31,4 @@ data class PlayerSettings(
 
     @ColumnInfo(name = "deck_background", typeAffinity = ColumnInfo.INTEGER)
     var deckBackground: Int
-) {
-    companion object {
-
-        @Volatile
-        @JvmStatic
-        private lateinit var INSTANCE: PlayerSettings
-
-        @JvmStatic
-        fun getInstance(): PlayerSettings = INSTANCE
-
-        @JvmStatic
-        fun updateInstance(playerSettings: PlayerSettings): PlayerSettings {
-            INSTANCE = PlayerSettings(
-                playerSettings.id,
-                playerSettings.storeInCloud,
-                playerSettings.audioOn,
-                playerSettings.audioValue,
-                playerSettings.sfxOn,
-                playerSettings.sfxValue,
-                playerSettings.numberOfDecks,
-                playerSettings.deckBackground
-            )
-            return INSTANCE
-        }
-    }
-}
+)

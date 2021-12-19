@@ -17,7 +17,7 @@ import com.huntergaming.classicsolitaire.BuildConfig
 import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.composables.HunterGamingHeaderText
+import com.huntergaming.ui.composable.HunterGamingHeaderText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

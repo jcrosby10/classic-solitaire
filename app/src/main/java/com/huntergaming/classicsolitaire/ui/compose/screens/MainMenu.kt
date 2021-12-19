@@ -14,9 +14,9 @@ import androidx.navigation.compose.rememberNavController
 import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.composables.HunterGamingButton
-import com.huntergaming.composables.HunterGamingColumn
-import com.huntergaming.composables.HunterGamingHeaderText
+import com.huntergaming.ui.composable.HunterGamingButton
+import com.huntergaming.ui.composable.HunterGamingColumn
+import com.huntergaming.ui.composable.HunterGamingHeaderText
 import kotlin.system.exitProcess
 
 private const val USER_QUIT = 0

@@ -24,14 +24,14 @@ import com.google.accompanist.pager.rememberPagerState
 import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.composables.HunterGamingButton
-import com.huntergaming.composables.HunterGamingColumn
-import com.huntergaming.composables.HunterGamingHorizontalImageRadioButton
-import com.huntergaming.composables.HunterGamingHorizontalRadioButton
-import com.huntergaming.composables.HunterGamingHorizontalSlider
-import com.huntergaming.composables.HunterGamingRow
-import com.huntergaming.composables.HunterGamingTabs
-import com.huntergaming.composables.HunterGamingTitleText
+import com.huntergaming.ui.composable.HunterGamingButton
+import com.huntergaming.ui.composable.HunterGamingColumn
+import com.huntergaming.ui.composable.HunterGamingHorizontalImageRadioButton
+import com.huntergaming.ui.composable.HunterGamingHorizontalRadioButton
+import com.huntergaming.ui.composable.HunterGamingHorizontalSlider
+import com.huntergaming.ui.composable.HunterGamingRow
+import com.huntergaming.ui.composable.HunterGamingTabs
+import com.huntergaming.ui.composable.HunterGamingTitleText
 
 @ExperimentalPagerApi
 @Preview(showBackground = true, widthDp = 720, heightDp = 360)
@@ -238,8 +238,8 @@ private fun GameSettings() {
                     R.drawable.card_back_blue,
                     R.drawable.card_back_dark_blue
                 ),
-                imageWidth = com.huntergaming.composables.R.dimen.image_radio_width,
-                imageHeight = com.huntergaming.composables.R.dimen.image_radio_height,
+                imageWidth = com.huntergaming.ui.R.dimen.image_radio_width,
+                imageHeight = com.huntergaming.ui.R.dimen.image_radio_height,
                 contentDescriptions = stringArrayResource(R.array.content_descriptions_card_backs).toList(),
                 onSelect = { },
                 selectedIndex = 0

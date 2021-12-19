@@ -8,7 +8,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Classic Solitaire"
 include(":app")
-include(":composables")
-include(":gamedata")
-include(":classic-solitaire-data")
 include(":authentication")
+include(":classic-solitaire-data")
+include(":gamedata")
+include(":ui")
