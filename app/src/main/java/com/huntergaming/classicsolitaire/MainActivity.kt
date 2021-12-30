@@ -1,30 +1,24 @@
 package com.huntergaming.classicsolitaire
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.android.gms.auth.api.Auth
-import com.huntergaming.authentication.adapter.AuthenticationAdapter
+import com.huntergaming.authentication.viewmodel.AuthenticationViewModel
 import com.huntergaming.authentication.ui.Authentication
 import com.huntergaming.classicsolitaire.adapter.PreferencesAdapter
 import com.huntergaming.classicsolitaire.ui.compose.screens.GameScreen
@@ -33,22 +27,13 @@ import com.huntergaming.classicsolitaire.ui.compose.screens.SettingsScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.SplashScreen
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 import com.huntergaming.ui.composable.HunterGamingAlertDialog
-import com.huntergaming.ui.composable.HunterGamingBodyText
-import com.huntergaming.ui.composable.HunterGamingButton
-import com.huntergaming.ui.composable.HunterGamingTitleText
 import com.huntergaming.ui.uitl.CommunicationAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.launch
 
 @ExperimentalPagerApi
 @AndroidEntryPoint
 internal class MainActivity : ComponentActivity() {
-
-    companion object {
-        private const val PLAY_GAMES_SIGN_IN = "googlePlaySignIn"
-        private const val LOG_TAG = "MainActivity"
-    }
 
     @Inject
     lateinit var preferencesAdapter: PreferencesAdapter
@@ -56,96 +41,42 @@ internal class MainActivity : ComponentActivity() {
     @Inject
     lateinit var communicationAdapter: CommunicationAdapter
 
-    @Inject
-    internal lateinit var authAdapter: AuthenticationAdapter
-
-    private val loginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK && result.data!!.hasExtra(PLAY_GAMES_SIGN_IN)) {
-            lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    val googleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(result.data!!)
-                    authAdapter.onManualResult(googleSignInResult!!, this@MainActivity)
-                }
-            }
-        }
-    }
+    private val authViewModel: AuthenticationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        authAdapter.loginManually.observe(this) {
-            val signInClient = authAdapter.signInClient
-            val intent = signInClient.signInIntent
-            intent.putExtra(PLAY_GAMES_SIGN_IN, PLAY_GAMES_SIGN_IN)
-            loginResult.launch(intent)
-        }
-
         hideSystemUI()
 
         setContent {
-            val failures = communicationAdapter.error.observeAsState()
-            val closeDialog = remember { mutableStateOf(false) }
-
-            if (!failures.value.isNullOrEmpty() && !closeDialog.value) {
-                Log.e(LOG_TAG, failures.value!!)
-
-                HunterGamingAlertDialog(
-                    confirmButton = {
-                        HunterGamingButton(
-                            onClick = { closeDialog.value = true },
-                            text = com.huntergaming.authentication.R.string.button_ok
-                        )
-                    },
-                    title = { HunterGamingTitleText(text = com.huntergaming.authentication.R.string.error_title) },
-                    text = { HunterGamingBodyText(text = failures.value!!) },
-                    dismissOnBackPress = false,
-                    dismissOnClickOutside = false
-                )
-            }
 
             val showDialog = remember { mutableStateOf(preferencesAdapter.shownDataConsent()) }
 
-            if (showDialog.value) {
-                HunterGamingAlertDialog(
-                    dismissOnBackPress = false,
-                    dismissOnClickOutside = false,
-                    confirmButton = {
-                        HunterGamingButton(
-                            onClick = {
-                                showDialog.value = false
-                                preferencesAdapter.setCanUseFirebase(true)
-                            },
-                            text = R.string.button_yes
-                        )
-                    },
-                    dismissButton = {
-                        HunterGamingButton(
-                            onClick = {
-                                showDialog.value = false
-                                preferencesAdapter.setCanUseFirebase(false)
-                            },
-                            text = R.string.button_no
-                        )
-                    },
-                    title = {
-                        HunterGamingTitleText(
-                            text = R.string.data_consent
-                        )
-                    },
-                    text = {
-                        HunterGamingBodyText(
-                            text = R.string.data_consent_description
-                        )
-                    }
-                )
-
-                preferencesAdapter.updateDataConsent()
-            }
+            HunterGamingAlertDialog(
+                state = showDialog,
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false,
+                onConfirm = {
+                    showDialog.value = false
+                    preferencesAdapter.setCanUseFirebase(true)
+                    preferencesAdapter.updateDataConsent()
+                },
+                onDismiss = {
+                    showDialog.value = false
+                    preferencesAdapter.setCanUseFirebase(false)
+                    preferencesAdapter.updateDataConsent()
+                },
+                title = R.string.data_consent,
+                text = R.string.data_consent_description
+            )
 
             val navController = rememberNavController()
             ClassicSolitaireNavigation(
                 navController = navController,
-                communicationAdapter = communicationAdapter
+                authViewModel = authViewModel,
+                owner = this,
+                communicationAdapter = communicationAdapter,
+                context = applicationContext
             )
         }
     }
@@ -174,16 +105,27 @@ internal class MainActivity : ComponentActivity() {
 
 @ExperimentalPagerApi
 @Composable
-private fun ClassicSolitaireNavigation(navController: NavHostController, communicationAdapter: CommunicationAdapter) {
+private fun ClassicSolitaireNavigation(
+    navController: NavHostController,
+    authViewModel: AuthenticationViewModel,
+    owner: LifecycleOwner,
+    context: Context,
+    communicationAdapter: CommunicationAdapter
+) {
     val loadingContent: (suspend () -> Unit)? by rememberSaveable { mutableStateOf(null) }
 
     NavHost(
         navController = navController,
-        startDestination = ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route
+        startDestination = ComposableRoutes.SPLASH_SCREEN_NAV.route,
     ) {
         composable(ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route) {
             ClassicSolitaireTheme {
-                Authentication(communicationAdapter = communicationAdapter)
+                Authentication(
+                    authViewModel = authViewModel,
+                    owner = owner,
+                    context = context,
+                    communicationAdapter = communicationAdapter
+                )
             }
         }
 
@@ -191,7 +133,8 @@ private fun ClassicSolitaireNavigation(navController: NavHostController, communi
             ClassicSolitaireTheme {
                 SplashScreen(
                     navController = navController,
-                    loadContent = loadingContent
+                    loadContent = loadingContent,
+                    authViewModel = authViewModel
                 )
             }
         }
@@ -211,6 +154,7 @@ private fun ClassicSolitaireNavigation(navController: NavHostController, communi
                 )
             }
         }
+
         composable(ComposableRoutes.GAME_SCREEN_NAV.route) { ClassicSolitaireTheme { GameScreen() } }
     }
 }

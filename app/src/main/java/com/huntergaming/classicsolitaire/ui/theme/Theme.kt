@@ -8,26 +8,32 @@ import androidx.compose.runtime.Composable
 
 private val DarkColorPalette = darkColors(
     primary = PrimaryDark,
-    onPrimary = OnDark,
-    primaryVariant = VariantDark,
+    primaryVariant = PrimaryVariantDark,
     secondary = SecondaryDark,
-    onSecondary = OnDark,
+    secondaryVariant = SecondaryVariantDark,
     background = BackgroundDark,
-    onBackground = OnDark,
+    surface = SurfaceDark,
     error = ErrorDark,
-    onError = OnDark
+    onPrimary = OnPrimaryDark,
+    onSecondary = OnSecondaryDark,
+    onBackground = OnBackgroundDark,
+    onSurface = OnSurfaceDark,
+    onError = OnErrorDark
 )
 
 private val LightColorPalette = lightColors(
     primary = PrimaryLight,
-    onPrimary = OnLight,
-    primaryVariant = VariantLight,
+    primaryVariant = PrimaryVariantLight,
     secondary = SecondaryLight,
-    onSecondary = OnLight,
+    secondaryVariant = SecondaryVariantLight,
     background = BackgroundLight,
-    onBackground = OnLight,
+    surface = SurfaceLight,
     error = ErrorLight,
-    onError = OnLight
+    onPrimary = OnPrimaryLight,
+    onSecondary = OnSecondaryLight,
+    onBackground = OnBackgroundLight,
+    onSurface = OnSurfaceLight,
+    onError = OnErrorLight
 )
 
 @Composable

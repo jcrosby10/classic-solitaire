@@ -28,82 +28,82 @@ private val ColombiaBold = FontFamily(
     Font(R.font.colombia, FontWeight.Bold)
 )
 
-internal val DarkTypography = Typography(
+internal val LightTypography = Typography(
     h1 = TextStyle(
         fontFamily = AntiCoronaBoldTitle,
         fontSize = 34.sp,
         letterSpacing = 2.sp,
         shadow = Shadow(BackgroundDark, Offset(.8f, .8f), .5f),
-        color = OnDark
+        color = OnPrimaryDark
     ),
     h4 = TextStyle(
         fontFamily = AntiCoronaTitle,
         fontSize = 30.sp,
         letterSpacing = 1.5.sp,
         shadow = Shadow(BackgroundDark, Offset(.4f, .2f), .3f),
-        color = OnDark
+        color = OnPrimaryDark
     ),
     h6 = TextStyle(
         fontFamily = AntiCoronaTitle,
         fontSize = 20.sp,
-        color = OnDark
+        color = OnPrimaryDark
     ),
     body1 = TextStyle(
         fontFamily = Colombia,
         fontSize = 18.sp,
-        color = OnDark
+        color = OnPrimaryDark
     ),
     caption = TextStyle(
         fontFamily = Colombia,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         letterSpacing = 0.4.sp,
-        color = OnDark
+        color = OnPrimaryDark
     ),
     button = TextStyle(
         fontFamily = ColombiaBold,
         fontSize = 25.sp,
         textDecoration = TextDecoration.Underline,
-        color = OnDark
+        color = OnPrimaryDark
     )
 )
 
-internal val LightTypography = Typography(
+internal val DarkTypography = Typography(
     h1 = TextStyle(
         fontFamily = AntiCoronaBoldTitle,
         fontSize = 34.sp,
         letterSpacing = 2.sp,
-        shadow = Shadow(BackgroundLight, Offset(.8f, .8f), .5f),
-        color = OnLight
+        shadow = Shadow(BackgroundDark, Offset(.8f, .8f), .5f),
+        color = OnPrimaryLight
     ),
     h4 = TextStyle(
         fontFamily = AntiCoronaTitle,
         fontSize = 30.sp,
         letterSpacing = 1.5.sp,
-        shadow = Shadow(BackgroundLight, Offset(.4f, .2f), .3f),
-        color = OnLight
+        shadow = Shadow(BackgroundDark, Offset(.4f, .2f), .3f),
+        color = OnPrimaryLight
     ),
     h6 = TextStyle(
         fontFamily = AntiCoronaTitle,
         fontSize = 20.sp,
-        color = OnLight
+        color = OnPrimaryLight
     ),
     body1 = TextStyle(
         fontFamily = Colombia,
-        fontSize = 16.sp,
-        color = OnLight
+        fontSize = 18.sp,
+        color = OnPrimaryLight
     ),
     caption = TextStyle(
         fontFamily = Colombia,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         letterSpacing = 0.4.sp,
-        color = OnLight
+        color = OnPrimaryLight
     ),
     button = TextStyle(
         fontFamily = ColombiaBold,
-        fontSize = 14.sp,
+        fontSize = 25.sp,
         textDecoration = TextDecoration.Underline,
-        color = OnLight
+        color = OnPrimaryLight
     )
 )
