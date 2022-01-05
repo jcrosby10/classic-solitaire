@@ -1,7 +1,11 @@
 package com.huntergaming.classicsolitaire.ui.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.huntergaming.classicsolitaire.R
@@ -11,28 +15,98 @@ import com.huntergaming.ui.composable.HunterGamingRow
 
 @Composable
 fun ClassicSolitaireTitle() {
-    HunterGamingColumn {
+    HunterGamingColumn(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-        HunterGamingRow {
-            Image(painter = painterResource(id = R.drawable.c_c), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.l), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.a), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.s), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.s), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.i), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.c), contentDescription = "")
+        HunterGamingRow(
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.c_c),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.l),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.a),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.s),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.s),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.i),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.c),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
         }
 
-        HunterGamingRow {
-            Image(painter = painterResource(id = R.drawable.s_s), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.o), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.l), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.i), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.t), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.a), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.i), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.r), contentDescription = "")
-            Image(painter = painterResource(id = R.drawable.e), contentDescription = "")
+        HunterGamingRow(
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.s_s),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.o),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.l),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.i),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.t),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.a),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.i),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.r),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
+            Image(
+                painter = painterResource(id = R.drawable.e),
+                contentDescription = "@null",
+                modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
+            )
         }
     }
 }
