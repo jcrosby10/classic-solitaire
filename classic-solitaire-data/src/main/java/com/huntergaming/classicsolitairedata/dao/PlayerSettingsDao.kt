@@ -6,13 +6,13 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.huntergaming.classicsolitairedata.model.PlayerSettings
-import com.huntergaming.gamedata.dao.HunterGamingDao
 import com.huntergaming.gamedata.dao.HunterGamingMigrateDao
+import com.huntergaming.gamedata.dao.RoomDao
 import javax.inject.Singleton
 
 @Singleton
 @Dao
-internal interface PlayerSettingsDao : HunterGamingDao<PlayerSettings>, HunterGamingMigrateDao {
+internal interface PlayerSettingsDao : RoomDao<PlayerSettings>, HunterGamingMigrateDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     override suspend fun create(data: PlayerSettings): Long
