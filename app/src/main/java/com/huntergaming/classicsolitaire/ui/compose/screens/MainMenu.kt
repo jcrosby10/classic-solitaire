@@ -1,6 +1,7 @@
 package com.huntergaming.classicsolitaire.ui.compose.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -15,7 +16,6 @@ import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 import com.huntergaming.ui.composable.HunterGamingButton
-import com.huntergaming.ui.composable.HunterGamingColumn
 import com.huntergaming.ui.composable.HunterGamingHeaderText
 import kotlin.system.exitProcess
 
@@ -53,7 +53,7 @@ internal fun MainMenu(
             text = R.string.app_name
         )
 
-        HunterGamingColumn(
+        Column(
             modifier = Modifier
                 .constrainAs(ref = mainMenu) {
                     start.linkTo(parent.start)

@@ -2,6 +2,8 @@ package com.huntergaming.classicsolitaire.ui.compose.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,11 +27,9 @@ import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 import com.huntergaming.ui.composable.HunterGamingButton
-import com.huntergaming.ui.composable.HunterGamingColumn
 import com.huntergaming.ui.composable.HunterGamingHorizontalImageRadioButton
 import com.huntergaming.ui.composable.HunterGamingHorizontalRadioButton
 import com.huntergaming.ui.composable.HunterGamingHorizontalSlider
-import com.huntergaming.ui.composable.HunterGamingRow
 import com.huntergaming.ui.composable.HunterGamingTabs
 import com.huntergaming.ui.composable.HunterGamingTitleText
 
@@ -113,13 +113,13 @@ private fun SoundSettings() {
         stringResource(R.string.off)
     )
 
-    HunterGamingColumn(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ) {
 
-        HunterGamingRow(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -151,7 +151,7 @@ private fun SoundSettings() {
             )
         }
 
-        HunterGamingRow(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -187,12 +187,12 @@ private fun SoundSettings() {
 
 @Composable
 private fun GameSettings() {
-    HunterGamingColumn(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ) {
-        HunterGamingRow(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -217,7 +217,7 @@ private fun GameSettings() {
             )
         }
 
-        HunterGamingRow(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -250,7 +250,7 @@ private fun GameSettings() {
 
 @Composable
 private fun PrivacySettings() {
-    HunterGamingRow(
+    Row(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)

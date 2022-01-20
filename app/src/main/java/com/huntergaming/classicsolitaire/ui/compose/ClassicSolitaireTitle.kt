@@ -1,6 +1,8 @@
 package com.huntergaming.classicsolitaire.ui.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -10,16 +12,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.ui.composable.HunterGamingColumn
-import com.huntergaming.ui.composable.HunterGamingRow
 
 @Composable
 fun ClassicSolitaireTitle() {
-    HunterGamingColumn(
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        HunterGamingRow(
+        Row(
             verticalAlignment = Alignment.Bottom
         ) {
             Image(
@@ -59,7 +59,7 @@ fun ClassicSolitaireTitle() {
             )
         }
 
-        HunterGamingRow(
+        Row(
             verticalAlignment = Alignment.Bottom
         ) {
             Image(
