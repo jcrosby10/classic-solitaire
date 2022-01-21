@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.huntergaming.authentication.viewmodel.AuthenticationViewModel
 import com.huntergaming.authentication.ui.Authentication
+import com.huntergaming.authentication.ui.NAV_TO_MAIN_MENU
 import com.huntergaming.classicsolitaire.adapter.PreferencesAdapter
 import com.huntergaming.classicsolitaire.ui.compose.screens.GameScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.MainMenu
@@ -67,7 +69,8 @@ internal class MainActivity : ComponentActivity() {
                     preferencesAdapter.updateDataConsent()
                 },
                 title = R.string.data_consent,
-                text = R.string.data_consent_description
+                text = R.string.data_consent_description,
+                backgroundImage = R.drawable.dialog_bg
             )
 
             val navController = rememberNavController()
@@ -78,6 +81,14 @@ internal class MainActivity : ComponentActivity() {
                 communicationAdapter = communicationAdapter,
                 context = applicationContext
             )
+
+            LaunchedEffect(true) {
+                communicationAdapter.message.observe(this@MainActivity) {
+                    when (it.data) {
+                        NAV_TO_MAIN_MENU -> navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route)
+                    }
+                }
+            }
         }
     }
 
