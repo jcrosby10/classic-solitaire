@@ -29,6 +29,9 @@
     <string name="two">2</string>
     <string name="three">3</string>
 
+    <string name="content_description_settings">Change Settings</string>
+    <string name="content_description_play">Play</string>
+    <string name="content_description_quit">Quit</string>
     <array name="content_descriptions_card_backs">
         <item>A red card back</item>
         <item>A yellow card back</item>

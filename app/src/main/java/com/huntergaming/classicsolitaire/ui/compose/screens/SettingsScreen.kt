@@ -1,6 +1,7 @@
 package com.huntergaming.classicsolitaire.ui.compose.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -101,7 +105,8 @@ internal fun SettingsScreen(navController: NavHostController) {
                     zIndex = 1f
                 ),
             onClick = { navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route) },
-            text = R.string.button_back
+            icon = if (isSystemInDarkTheme()) Icons.TwoTone.ArrowBack else Icons.Outlined.ArrowBack,
+            contentDescription = R.string.content_description_quit
         )
     }
 }

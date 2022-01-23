@@ -32,6 +32,7 @@ internal fun SplashScreen(
     loadContent: (suspend () -> Unit)? = null,
     authViewModel: AuthenticationViewModel
 ) {
+
     if (loadContent == null) {
         val timer = object: CountDownTimer(time, 1000) {
             override fun onTick(millisUntilFinished: Long) {}
@@ -81,7 +82,7 @@ private fun DefaultPreview() {
     ClassicSolitaireTheme {
         SplashScreen(
             navController = NavHostController(LocalContext.current),
-            authViewModel = AuthenticationViewModel(null, null)
+            authViewModel = AuthenticationViewModel(null, LocalContext.current)
         )
     }
 }
@@ -92,7 +93,7 @@ private fun DefaultPreview2() {
     ClassicSolitaireTheme {
         SplashScreen(
             navController = NavHostController(LocalContext.current),
-            authViewModel = AuthenticationViewModel(null, null)
+            authViewModel = AuthenticationViewModel(null, LocalContext.current)
         )
     }
 }
@@ -103,7 +104,7 @@ private fun DefaultPreview3() {
     ClassicSolitaireTheme {
         SplashScreen(
             navController = NavHostController(LocalContext.current),
-            authViewModel = AuthenticationViewModel(null, null)
+            authViewModel = AuthenticationViewModel(null, LocalContext.current)
         )
     }
 }
@@ -114,7 +115,7 @@ private fun DefaultPreview4() {
     ClassicSolitaireTheme {
         SplashScreen(
             navController = NavHostController(LocalContext.current),
-            authViewModel = AuthenticationViewModel(null, null)
+            authViewModel = AuthenticationViewModel(null, LocalContext.current)
         )
     }
 }

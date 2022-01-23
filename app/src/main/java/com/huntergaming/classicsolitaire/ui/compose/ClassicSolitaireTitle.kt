@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,16 +15,21 @@ import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 
 @Composable
-fun ClassicSolitaireTitle() {
+fun ClassicSolitaireTitle(
+    modifier: Modifier = Modifier,
+    scale: Float = 1f
+) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .scale(scale = scale)
     ) {
 
         Row(
             verticalAlignment = Alignment.Bottom
         ) {
             Image(
-                painter = painterResource(id = R.drawable.c_c),
+                painter = painterResource(id = R.drawable.cc),
                 contentDescription = "@null",
                 modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
             )
@@ -63,7 +69,7 @@ fun ClassicSolitaireTitle() {
             verticalAlignment = Alignment.Bottom
         ) {
             Image(
-                painter = painterResource(id = R.drawable.s_s),
+                painter = painterResource(id = R.drawable.ss),
                 contentDescription = "@null",
                 modifier = Modifier.height(dimensionResource(id = R.dimen.letter_height))
             )

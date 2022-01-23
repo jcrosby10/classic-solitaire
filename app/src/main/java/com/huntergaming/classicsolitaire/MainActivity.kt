@@ -82,6 +82,10 @@ internal class MainActivity : ComponentActivity() {
                 context = applicationContext
             )
 
+            if (authViewModel.isLoggedIn() == true) {
+                navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route)
+            }
+
             LaunchedEffect(true) {
                 communicationAdapter.message.observe(this@MainActivity) {
                     when (it.data) {
