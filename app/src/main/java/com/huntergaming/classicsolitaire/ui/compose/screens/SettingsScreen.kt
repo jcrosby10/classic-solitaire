@@ -1,110 +1,90 @@
 package com.huntergaming.classicsolitaire.ui.compose.screens
 
-import androidx.compose.foundation.background
+import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.SportsEsports
+import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material.icons.twotone.ArrowBack
+import androidx.compose.material.icons.twotone.Person
+import androidx.compose.material.icons.twotone.SportsEsports
+import androidx.compose.material.icons.twotone.VolumeUp
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.zIndex
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
-import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
+import com.huntergaming.ui.composable.HunterGamingBackgroundImage
 import com.huntergaming.ui.composable.HunterGamingButton
 import com.huntergaming.ui.composable.HunterGamingHorizontalImageRadioButton
 import com.huntergaming.ui.composable.HunterGamingHorizontalRadioButton
-import com.huntergaming.ui.composable.HunterGamingHorizontalSlider
+import com.huntergaming.ui.composable.HunterGamingSettingsRow
 import com.huntergaming.ui.composable.HunterGamingTabs
 import com.huntergaming.ui.composable.HunterGamingTitleText
 
-@ExperimentalPagerApi
-@Preview(showBackground = true, widthDp = 720, heightDp = 360)
-@Composable
-private fun DefaultPreviewSettingsScreen() {
-    ClassicSolitaireTheme {
-        SettingsScreen(
-            navController = rememberNavController()
-        )
-    }
-}
+// COMPOSABLES
 
 @ExperimentalPagerApi
 @Composable
 internal fun SettingsScreen(navController: NavHostController) {
-    val tabIcons = remember {
-        mutableStateOf(
-            listOf(
-                R.drawable.sound_on,
-                R.drawable.controller,
-                R.drawable.lock
-            )
-        )
-    }
 
-    val tabTitles = remember {
-        mutableStateOf(
-            listOf(
-                R.string.sound,
-                R.string.game,
-                R.string.privacy
-            )
-        )
-    }
-
-    HunterGamingTabs(
-        tabIcons = tabIcons.value,
-        tabTitles = tabTitles.value,
-        pagerState = rememberPagerState(
-            pageCount = tabIcons.value.size,
-            initialOffscreenLimit = 2,
-            infiniteLoop = true,
-            initialPage = 1,
-        ),
-        { SoundSettings() },  { GameSettings() }, { PrivacySettings() }
-    )
-
-    ConstraintLayout(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .zIndex(
-                zIndex = -1f
-            )
     ) {
-        val (back) = createRefs()
+
+        HunterGamingBackgroundImage(image = R.drawable.menu_bg)
+
+        HunterGamingTabs(
+
+            tabIcons = listOf(
+                if (isSystemInDarkTheme()) Icons.TwoTone.VolumeUp else Icons.Outlined.VolumeUp,
+                if (isSystemInDarkTheme()) Icons.TwoTone.SportsEsports else Icons.Outlined.SportsEsports,
+                if (isSystemInDarkTheme()) Icons.TwoTone.Person else Icons.Outlined.Person
+            ),
+
+            contentDescriptions = listOf(
+                R.string.content_description_sound,
+                R.string.content_description_gameplay,
+                R.string.content_description_profile
+            ),
+
+            pagerState = rememberPagerState(
+                pageCount = 3,
+                initialOffscreenLimit = 2,
+                infiniteLoop = true,
+                initialPage = 0,
+            ),
+
+            { SoundSettings() },  { GameSettings() }, { ProfileSettings() }
+        )
+
         HunterGamingButton(
+
             modifier = Modifier
-                .constrainAs(back) {
-                    start.linkTo(parent.start)
-                    bottom.linkTo(parent.bottom)
-                }
                 .padding(
-                    start = dimensionResource(R.dimen.padding_large),
-                    bottom = dimensionResource(R.dimen.padding_large)
-                )
-                .zIndex(
-                    zIndex = 1f
+                    start = dimensionResource(R.dimen.padding_xlarge),
+                    top = dimensionResource(id = R.dimen.padding_xxlarge)
                 ),
-            onClick = { navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route) },
+
+            onClick = { navController.popBackStack() },
             icon = if (isSystemInDarkTheme()) Icons.TwoTone.ArrowBack else Icons.Outlined.ArrowBack,
             contentDescription = R.string.content_description_quit
         )
@@ -113,80 +93,39 @@ internal fun SettingsScreen(navController: NavHostController) {
 
 @Composable
 private fun SoundSettings() {
-    val onOff = listOf(
-        stringResource(R.string.on),
-        stringResource(R.string.off)
-    )
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.background)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
 
-        Row(
+        HunterGamingSettingsRow(
+
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     start = dimensionResource(R.dimen.padding_large)
                 ),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            HunterGamingTitleText(
-                text = R.string.audio,
-                modifier = Modifier
-                    .weight(1f)
-            )
 
-            HunterGamingHorizontalRadioButton(
-                texts = onOff,
-                onSelect = { },
-                selectedIndex = 0
-            )
+            onCheckChange = {},
+            onSliderChange = {},
+            settingName = R.string.audio
+        )
 
-            HunterGamingHorizontalSlider(
-                modifier = Modifier
-                    .requiredWidth(dimensionResource(R.dimen.width_300))
-                    .padding(
-                        start = dimensionResource(R.dimen.padding_medium),
-                        end = dimensionResource(R.dimen.padding_medium)
-                    ),
-                initialValue = .8f,
-                onValueChange = { },
-            )
-        }
+        HunterGamingSettingsRow(
 
-        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     start = dimensionResource(R.dimen.padding_large)
                 ),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            HunterGamingTitleText(
-                text = R.string.sfx,
-                modifier = Modifier
-                    .weight(1f)
-            )
 
-            HunterGamingHorizontalRadioButton(
-                texts = onOff,
-                onSelect = { },
-                selectedIndex = 0
-            )
-
-            HunterGamingHorizontalSlider(
-                modifier = Modifier
-                    .requiredWidth(dimensionResource(R.dimen.width_300))
-                    .padding(
-                        start = dimensionResource(R.dimen.padding_medium),
-                        end = dimensionResource(R.dimen.padding_medium)
-                    ),
-                initialValue = .8f,
-                onValueChange = { },
-            )
-        }
+            onCheckChange = {},
+            onSliderChange = {},
+            settingName = R.string.sfx
+        )
     }
 }
 
@@ -195,7 +134,6 @@ private fun GameSettings() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)
     ) {
         Row(
             modifier = Modifier
@@ -254,11 +192,10 @@ private fun GameSettings() {
 }
 
 @Composable
-private fun PrivacySettings() {
+private fun PrivacySettings() { // TODO move to ProfileSettings
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)
             .padding(
                 start = dimensionResource(R.dimen.padding_large),
                 end = dimensionResource(R.dimen.padding_large)
@@ -279,6 +216,58 @@ private fun PrivacySettings() {
             texts = yesNo,
             onSelect = { },
             selectedIndex = 1
+        )
+    }
+}
+
+@Composable
+private fun ProfileSettings() {
+
+    // name, password, consent, logout
+}
+
+// PREVIEWS
+
+@ExperimentalPagerApi
+@Preview(showBackground = true, widthDp = 1280, heightDp = 720, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun DefaultPreview() {
+    ClassicSolitaireTheme {
+        SettingsScreen(
+            navController = rememberNavController()
+        )
+    }
+}
+
+@ExperimentalPagerApi
+@Preview(showBackground = true, widthDp = 1920, heightDp = 1080)
+@Composable
+private fun DefaultPreview2() {
+    ClassicSolitaireTheme {
+        SettingsScreen(
+            navController = rememberNavController()
+        )
+    }
+}
+
+@ExperimentalPagerApi
+@Preview(showBackground = true, widthDp = 800, heightDp = 480, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun DefaultPreview3() {
+    ClassicSolitaireTheme {
+        SettingsScreen(
+            navController = rememberNavController()
+        )
+    }
+}
+
+@ExperimentalPagerApi
+@Preview(showBackground = true, widthDp = 854, heightDp = 480)
+@Composable
+private fun DefaultPreview4() {
+    ClassicSolitaireTheme {
+        SettingsScreen(
+            navController = rememberNavController()
         )
     }
 }

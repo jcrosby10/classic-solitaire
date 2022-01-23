@@ -13,6 +13,8 @@ private fun DefaultPreviewGameScreen() {
 }
 
 @Composable
-internal fun GameScreen() {// background for background color
+internal fun GameScreen() {
 
+    // redirect to login if player is not logged in
+    // audio FloatingActionButton
 }

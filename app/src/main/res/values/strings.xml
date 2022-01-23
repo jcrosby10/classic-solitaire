@@ -32,6 +32,9 @@
     <string name="content_description_settings">Change Settings</string>
     <string name="content_description_play">Play</string>
     <string name="content_description_quit">Quit</string>
+    <string name="content_description_sound">Change the sound settings.</string>
+    <string name="content_description_gameplay">Change the gameplay settings.</string>
+    <string name="content_description_profile">Change your personal profile settings.</string>
     <array name="content_descriptions_card_backs">
         <item>A red card back</item>
         <item>A yellow card back</item>
