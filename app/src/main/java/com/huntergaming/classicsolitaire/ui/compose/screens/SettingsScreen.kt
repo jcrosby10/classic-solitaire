@@ -11,19 +11,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.SportsEsports
 import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material.icons.twotone.ArrowBack
+import androidx.compose.material.icons.twotone.Logout
 import androidx.compose.material.icons.twotone.Person
 import androidx.compose.material.icons.twotone.SportsEsports
 import androidx.compose.material.icons.twotone.VolumeUp
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -33,10 +38,12 @@ import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
 import com.huntergaming.ui.composable.HunterGamingBackgroundImage
 import com.huntergaming.ui.composable.HunterGamingButton
+import com.huntergaming.ui.composable.HunterGamingFieldRow
 import com.huntergaming.ui.composable.HunterGamingHorizontalImageRadioButton
-import com.huntergaming.ui.composable.HunterGamingHorizontalRadioButton
+import com.huntergaming.ui.composable.HunterGamingRadioButtonRow
 import com.huntergaming.ui.composable.HunterGamingSettingsRow
 import com.huntergaming.ui.composable.HunterGamingTabs
+import com.huntergaming.ui.composable.HunterGamingTextButton
 import com.huntergaming.ui.composable.HunterGamingTitleText
 
 // COMPOSABLES
@@ -70,7 +77,7 @@ internal fun SettingsScreen(navController: NavHostController) {
                 pageCount = 3,
                 initialOffscreenLimit = 2,
                 infiniteLoop = true,
-                initialPage = 0,
+                initialPage = 1,
             ),
 
             { SoundSettings() },  { GameSettings() }, { ProfileSettings() }
@@ -104,10 +111,7 @@ private fun SoundSettings() {
         HunterGamingSettingsRow(
 
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = dimensionResource(R.dimen.padding_large)
-                ),
+                .fillMaxWidth(),
 
             onCheckChange = {},
             onSliderChange = {},
@@ -117,10 +121,7 @@ private fun SoundSettings() {
         HunterGamingSettingsRow(
 
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = dimensionResource(R.dimen.padding_large)
-                ),
+                .fillMaxWidth(),
 
             onCheckChange = {},
             onSliderChange = {},
@@ -131,46 +132,32 @@ private fun SoundSettings() {
 
 @Composable
 private fun GameSettings() {
+
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    bottom = dimensionResource(R.dimen.padding_medium),
-                    start = dimensionResource(R.dimen.padding_large)
-                )
-        ) {
-            HunterGamingTitleText(
-                text = R.string.number_of_decks
-            )
 
-            val numberOfDecksValues = listOf(
+        HunterGamingRadioButtonRow(
+            rowText = R.string.number_of_decks,
+
+            radioButtonNames = listOf(
                 stringResource(R.string.one),
                 stringResource(R.string.two),
                 stringResource(R.string.three)
-            )
+            ),
 
-            HunterGamingHorizontalRadioButton(
-                texts = numberOfDecksValues,
-                onSelect = { },
-                selectedIndex = 0
-            )
-        }
+            onSelect = {  }
+        )
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    top = dimensionResource(R.dimen.padding_medium),
-                    start = dimensionResource(R.dimen.padding_large)
-                )
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            HunterGamingTitleText(
-                text = R.string.deck_background
-            )
+
+            HunterGamingTitleText(text = R.string.deck_background)
 
             HunterGamingHorizontalImageRadioButton(
                 images = listOf(
@@ -181,6 +168,7 @@ private fun GameSettings() {
                     R.drawable.card_back_blue,
                     R.drawable.card_back_dark_blue
                 ),
+
                 imageWidth = com.huntergaming.ui.R.dimen.image_radio_width,
                 imageHeight = com.huntergaming.ui.R.dimen.image_radio_height,
                 contentDescriptions = stringArrayResource(R.array.content_descriptions_card_backs).toList(),
@@ -192,38 +180,48 @@ private fun GameSettings() {
 }
 
 @Composable
-private fun PrivacySettings() { // TODO move to ProfileSettings
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                start = dimensionResource(R.dimen.padding_large),
-                end = dimensionResource(R.dimen.padding_large)
-            ),
-        horizontalArrangement = Arrangement.SpaceBetween
-
-    ) {
-        val yesNo = listOf(
-            stringResource(R.string.yes),
-            stringResource(R.string.no)
-        )
-
-        HunterGamingTitleText(
-            text = R.string.data_consent
-        )
-
-        HunterGamingHorizontalRadioButton(
-            texts = yesNo,
-            onSelect = { },
-            selectedIndex = 1
-        )
-    }
-}
-
-@Composable
 private fun ProfileSettings() {
 
-    // name, password, consent, logout
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+
+            val name = remember { mutableStateOf(TextFieldValue(text =  "")) }
+            HunterGamingFieldRow(
+                fieldNameString = R.string.change_name,
+                hintString = R.string.change_name,
+                onValueChanged = {},
+                textState = name
+            )
+
+            HunterGamingTextButton(onClick = { /*TODO*/ }, text = R.string.button_change_password)
+            HunterGamingTextButton(onClick = { /*TODO*/ }, text = R.string.button_reset_password)
+        }
+
+        HunterGamingRadioButtonRow(
+            rowText = R.string.data_consent,
+            radioButtonNames = listOf(
+                stringResource(R.string.yes),
+                stringResource(R.string.no)
+            ),
+            onSelect = {}
+        )
+
+        HunterGamingButton(
+            onClick = { /*TODO*/ },
+            icon = if (isSystemInDarkTheme()) Icons.TwoTone.Logout else Icons.Outlined.Logout,
+            contentDescription = R.string.content_description_logout
+        )
+    }
 }
 
 // PREVIEWS
