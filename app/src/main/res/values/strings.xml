@@ -19,6 +19,13 @@
     <string name="two">2</string>
     <string name="three">3</string>
 
+    <string name="dialog_title_confirm">Confirm</string>
+    <string name="dialog_change_password">Please enter your information below to reset your password.</string>
+    <string name="password_change_success">Password successfully changed.</string>
+    <string name="password_change_failed">Changing your password failed. Try again later.</string>
+
+    <string name="default_string"></string>
+
     <string name="content_description_settings">Change Settings</string>
     <string name="content_description_play">Play</string>
     <string name="content_description_quit">Quit</string>

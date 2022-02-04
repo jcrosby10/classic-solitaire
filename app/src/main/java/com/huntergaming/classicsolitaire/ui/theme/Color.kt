@@ -23,17 +23,17 @@ internal val SurfaceDark = Color(0xFF935B96)
 internal val ErrorLight = Color(0xffE25D6F)
 internal val ErrorDark = Color(0xff941B2B)
 
-internal val OnPrimaryLight = Color(0xff433541)
-internal val OnPrimaryDark = Color(0xffE4DDE3)
+internal val OnPrimaryLight = Color(0xFF5F4C5D)
+internal val OnPrimaryDark = Color(0xFF9E909E)
 
-internal val OnSecondaryLight = Color(0xff433541)
-internal val OnSecondaryDark = Color(0xffE4DDE3)
+internal val OnSecondaryLight = Color(0xFF5F4C5D)
+internal val OnSecondaryDark = Color(0xFF9E909E)
 
-internal val OnBackgroundLight = Color(0xff433541)
-internal val OnBackgroundDark = Color(0xffE4DDE3)
+internal val OnBackgroundLight = Color(0xFF5F4C5D)
+internal val OnBackgroundDark = Color(0xFF9E909E)
 
-internal val OnSurfaceLight = Color(0xff433541)
-internal val OnSurfaceDark = Color(0xffE4DDE3)
+internal val OnSurfaceLight = Color(0xFF5F4C5D)
+internal val OnSurfaceDark = Color(0xFF9E909E)
 
-internal val OnErrorLight = Color(0xff433541)
-internal val OnErrorDark = Color(0xffE4DDE3)
+internal val OnErrorLight = Color(0xFF5F4C5D)
+internal val OnErrorDark = Color(0xFF9E909E)

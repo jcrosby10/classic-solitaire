@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
@@ -20,15 +19,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.huntergaming.authentication.viewmodel.AuthenticationViewModel
-import com.huntergaming.authentication.ui.Authentication
-import com.huntergaming.authentication.ui.NAV_TO_MAIN_MENU
-import com.huntergaming.classicsolitaire.adapter.PreferencesAdapter
+import com.huntergaming.authentication.compose.Authentication
+import com.huntergaming.authentication.compose.NAV_TO_MAIN_MENU
+import com.huntergaming.authentication.compose.POP_STACK
 import com.huntergaming.classicsolitaire.ui.compose.screens.GameScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.MainMenu
 import com.huntergaming.classicsolitaire.ui.compose.screens.SettingsScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.SplashScreen
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.ui.composable.HunterGamingAlertDialog
+import com.huntergaming.classicsolitaire.viewmodel.PlayerViewModel
 import com.huntergaming.ui.uitl.CommunicationAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -37,13 +36,15 @@ import javax.inject.Inject
 @AndroidEntryPoint
 internal class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var preferencesAdapter: PreferencesAdapter
+    // properties
 
     @Inject
     lateinit var communicationAdapter: CommunicationAdapter
 
     private val authViewModel: AuthenticationViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
+
+    // overridden functions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,34 +53,14 @@ internal class MainActivity : ComponentActivity() {
 
         setContent {
 
-            val showDialog = remember { mutableStateOf(preferencesAdapter.shownDataConsent()) }
-
-            HunterGamingAlertDialog(
-                state = showDialog,
-                dismissOnBackPress = false,
-                dismissOnClickOutside = false,
-                onConfirm = {
-                    showDialog.value = false
-                    preferencesAdapter.setCanUseFirebase(true)
-                    preferencesAdapter.updateDataConsent()
-                },
-                onDismiss = {
-                    showDialog.value = false
-                    preferencesAdapter.setCanUseFirebase(false)
-                    preferencesAdapter.updateDataConsent()
-                },
-                title = R.string.data_consent,
-                text = R.string.data_consent_description,
-                backgroundImage = R.drawable.dialog_bg
-            )
-
             val navController = rememberNavController()
             ClassicSolitaireNavigation(
                 navController = navController,
                 authViewModel = authViewModel,
                 owner = this,
                 communicationAdapter = communicationAdapter,
-                context = applicationContext
+                context = applicationContext,
+                playerViewModel = playerViewModel
             )
 
             if (authViewModel.isLoggedIn() == true) {
@@ -88,8 +69,16 @@ internal class MainActivity : ComponentActivity() {
 
             LaunchedEffect(true) {
                 communicationAdapter.message.observe(this@MainActivity) {
-                    when (it.data) {
-                        NAV_TO_MAIN_MENU -> navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route)
+                    when (it.data[0]) {
+                        NAV_TO_MAIN_MENU -> {
+                            navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route) {
+
+                                if (it.data.size > 1 && it.data[1] == POP_STACK) {
+                                    popUpTo(ComposableRoutes.MAIN_MENU_NAV.route) { inclusive = false }
+                                    launchSingleTop = true
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -106,6 +95,8 @@ internal class MainActivity : ComponentActivity() {
         if (hasFocus) hideSystemUI()
     }
 
+    // private functions
+
     @Suppress("DEPRECATION")
     private fun hideSystemUI() {
         window.decorView.systemUiVisibility = (
@@ -118,14 +109,17 @@ internal class MainActivity : ComponentActivity() {
     }
 }
 
+// navigation
+
 @ExperimentalPagerApi
 @Composable
 private fun ClassicSolitaireNavigation(
     navController: NavHostController,
     authViewModel: AuthenticationViewModel,
+    playerViewModel: PlayerViewModel,
     owner: LifecycleOwner,
     context: Context,
-    communicationAdapter: CommunicationAdapter
+    communicationAdapter: CommunicationAdapter,
 ) {
     val loadingContent: (suspend () -> Unit)? by rememberSaveable { mutableStateOf(null) }
 
@@ -165,7 +159,10 @@ private fun ClassicSolitaireNavigation(
         composable(ComposableRoutes.SETTINGS_MENU_NAV.route) {
             ClassicSolitaireTheme {
                 SettingsScreen(
-                    navController = navController
+                    navController = navController,
+                    authViewModel = authViewModel,
+                    lifecycleOwner = owner,
+                    playerViewModel = playerViewModel
                 )
             }
         }

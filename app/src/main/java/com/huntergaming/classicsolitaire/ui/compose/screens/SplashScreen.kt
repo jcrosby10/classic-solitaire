@@ -26,6 +26,8 @@ import kotlinx.coroutines.launch
 
 private val time: Long = if (BuildConfig.DEBUG) 1000 else 5000
 
+// composables
+
 @Composable
 internal fun SplashScreen(
     navController: NavHostController,
@@ -38,7 +40,10 @@ internal fun SplashScreen(
             override fun onTick(millisUntilFinished: Long) {}
 
             override fun onFinish() {
-                if (authViewModel.isLoggedIn() == true) navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route)
+                if (authViewModel.isLoggedIn() == true) navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route) {
+                    popUpTo(ComposableRoutes.MAIN_MENU_NAV.route) { inclusive = false }
+                    launchSingleTop = true
+                }
                 else navController.navigate(ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route)
             }
         }
@@ -51,7 +56,10 @@ internal fun SplashScreen(
         LaunchedEffect(true) {
             scope.launch(Dispatchers.Main) {
                 loadContent()
-                navController.navigate(ComposableRoutes.GAME_SCREEN_NAV.route)
+                navController.navigate(ComposableRoutes.GAME_SCREEN_NAV.route) {
+                    popUpTo(ComposableRoutes.GAME_SCREEN_NAV.route) { inclusive = false }
+                    launchSingleTop = true
+                }
             }
         }
     }
@@ -74,7 +82,7 @@ internal fun SplashScreen(
     }
 }
 
-// PREVIEWS
+// previews
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 720)
 @Composable

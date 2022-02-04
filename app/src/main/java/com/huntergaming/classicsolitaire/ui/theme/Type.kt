@@ -34,37 +34,43 @@ internal val LightTypography = Typography(
         fontSize = 34.sp,
         letterSpacing = 2.sp,
         shadow = Shadow(BackgroundDark, Offset(.8f, .8f), .5f),
-        color = OnPrimaryDark
+        color = OnPrimaryLight
     ),
     h4 = TextStyle(
         fontFamily = AntiCoronaTitle,
         fontSize = 30.sp,
         letterSpacing = 1.5.sp,
         shadow = Shadow(BackgroundDark, Offset(.4f, .2f), .3f),
-        color = OnPrimaryDark
+        color = OnPrimaryLight
     ),
     h6 = TextStyle(
         fontFamily = AntiCoronaTitle,
         fontSize = 20.sp,
-        color = OnPrimaryDark
+        color = OnPrimaryLight
     ),
     body1 = TextStyle(
         fontFamily = Colombia,
         fontSize = 18.sp,
-        color = OnPrimaryDark
+        color = OnPrimaryLight
+    ),
+    body2 = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        letterSpacing = 0.25.sp,
+        color = OnPrimaryLight
     ),
     caption = TextStyle(
         fontFamily = Colombia,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         letterSpacing = 0.4.sp,
-        color = OnPrimaryDark
+        color = OnPrimaryLight
     ),
     button = TextStyle(
         fontFamily = ColombiaBold,
         fontSize = 25.sp,
         textDecoration = TextDecoration.Underline,
-        color = OnPrimaryDark
+        color = OnPrimaryLight
     )
 )
 
@@ -74,36 +80,42 @@ internal val DarkTypography = Typography(
         fontSize = 34.sp,
         letterSpacing = 2.sp,
         shadow = Shadow(BackgroundDark, Offset(.8f, .8f), .5f),
-        color = OnPrimaryLight
+        color = OnPrimaryDark
     ),
     h4 = TextStyle(
         fontFamily = AntiCoronaTitle,
         fontSize = 30.sp,
         letterSpacing = 1.5.sp,
         shadow = Shadow(BackgroundDark, Offset(.4f, .2f), .3f),
-        color = OnPrimaryLight
+        color = OnPrimaryDark
     ),
     h6 = TextStyle(
         fontFamily = AntiCoronaTitle,
         fontSize = 20.sp,
-        color = OnPrimaryLight
+        color = OnPrimaryDark
     ),
     body1 = TextStyle(
         fontFamily = Colombia,
         fontSize = 18.sp,
-        color = OnPrimaryLight
+        color = OnPrimaryDark
+    ),
+    body2 = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        letterSpacing = 0.25.sp,
+        color = OnPrimaryDark
     ),
     caption = TextStyle(
         fontFamily = Colombia,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         letterSpacing = 0.4.sp,
-        color = OnPrimaryLight
+        color = OnPrimaryDark
     ),
     button = TextStyle(
         fontFamily = ColombiaBold,
         fontSize = 25.sp,
         textDecoration = TextDecoration.Underline,
-        color = OnPrimaryLight
+        color = OnPrimaryDark
     )
 )

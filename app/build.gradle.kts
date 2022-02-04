@@ -58,6 +58,7 @@ dependencies {
     implementation(project(mapOf("path" to ":authentication")))
     implementation(project(mapOf("path" to ":gamedata")))
     implementation(project(mapOf("path" to ":ui")))
+    implementation(project(mapOf("path" to ":web")))
 
     implementation("com.google.android.material:material:1.5.0")
     implementation("com.google.dagger:hilt-android:2.40.5")
@@ -81,10 +82,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
-    implementation("androidx.navigation:navigation-compose:2.3.5")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.4.0")
+    implementation("androidx.navigation:navigation-compose:2.4.0")
 
     implementation("com.google.accompanist:accompanist-pager:0.12.0")
 

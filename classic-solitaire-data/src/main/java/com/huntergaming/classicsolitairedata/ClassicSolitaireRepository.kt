@@ -3,28 +3,22 @@ package com.huntergaming.classicsolitairedata
 import com.huntergaming.classicsolitairedata.dao.PlayerSettingsFirebaseDao
 import com.huntergaming.classicsolitairedata.model.PlayerSettings
 import com.huntergaming.gamedata.DataRequestState
-import com.huntergaming.gamedata.dao.RoomDao
-import com.huntergaming.gamedata.preferences.FirebasePreferences
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ClassicSolitaireRepository @Inject constructor(
-    private val firebasePreferences: FirebasePreferences,
-    private val playerSettingsDao: RoomDao<PlayerSettings>,
     private val playerSettingsFirebaseDao: PlayerSettingsFirebaseDao
 ) : PlayerSettingsRepo {
 
-    // OVERRIDDEN FUNCTIONS
+    // overridden functions
 
     override suspend fun getPlayerSettings(): Flow<DataRequestState> = flow {
         emit(DataRequestState.InProgress)
 
         runCatching {
-            val settings =
-                if (firebasePreferences.canUseFirebase()) playerSettingsFirebaseDao.getPlayerSettings()
-                else playerSettingsDao.read()
-
+            
+            val settings = playerSettingsFirebaseDao.getPlayerSettings()
             emit(DataRequestState.Success(settings))
         }
             .getOrElse { emit(DataRequestState.Error(it.message ?: "")) }
@@ -33,14 +27,15 @@ class ClassicSolitaireRepository @Inject constructor(
     override suspend fun updatePlayerSettings(playerSettings: PlayerSettings): Flow<DataRequestState> = flow {
         emit(DataRequestState.InProgress)
         runCatching {
-            if (firebasePreferences.canUseFirebase()) playerSettingsFirebaseDao.updatePlayerSettings(playerSettings)
-            else playerSettingsDao.update(playerSettings)
 
+            playerSettingsFirebaseDao.updatePlayerSettings(playerSettings)
             emit(DataRequestState.Success(Unit))
         }
             .getOrElse { emit(DataRequestState.Error(it.message ?: "")) }
     }
 }
+
+// interfaces
 
 interface PlayerSettingsRepo {
     suspend fun getPlayerSettings(): Flow<DataRequestState>

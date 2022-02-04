@@ -34,7 +34,7 @@ import kotlin.system.exitProcess
 
 private const val USER_QUIT = 0
 
-// COMPOSABLES
+// composables
 
 @Composable
 internal fun MainMenu(
@@ -68,7 +68,8 @@ internal fun MainMenu(
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.Top
             ) {
                 HunterGamingButton(
                     onClick = { navController.navigate(ComposableRoutes.SETTINGS_MENU_NAV.route) },
@@ -94,7 +95,7 @@ internal fun MainMenu(
     }
 }
 
-// PREVIEWS
+// previews
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 720, uiMode = UI_MODE_NIGHT_YES)
 @Composable

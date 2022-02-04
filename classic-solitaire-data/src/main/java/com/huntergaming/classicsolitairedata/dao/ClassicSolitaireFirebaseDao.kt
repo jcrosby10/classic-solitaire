@@ -2,7 +2,6 @@ package com.huntergaming.classicsolitairedata.dao
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.huntergaming.classicsolitairedata.model.PlayerSettings
-import com.huntergaming.gamedata.dao.HunterGamingMigrateDao
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -11,8 +10,9 @@ import kotlinx.coroutines.withContext
 @Singleton
 internal class ClassicSolitaireFirebaseDao @Inject constructor(
     private val db: FirebaseFirestore
-) : HunterGamingMigrateDao,
-    PlayerSettingsFirebaseDao {
+) : PlayerSettingsFirebaseDao {
+
+    // overridden functions
 
     override suspend fun getPlayerSettings(): PlayerSettings? = withContext(Dispatchers.IO) {
         var settings: PlayerSettings? = null
@@ -35,11 +35,9 @@ internal class ClassicSolitaireFirebaseDao @Inject constructor(
 
         success
     }
-
-    override suspend fun migrateData() {
-        TODO("Migrate from Firebase to Room")
-    }
 }
+
+// interfaces
 
 interface PlayerSettingsFirebaseDao {
     suspend fun getPlayerSettings(): PlayerSettings?
