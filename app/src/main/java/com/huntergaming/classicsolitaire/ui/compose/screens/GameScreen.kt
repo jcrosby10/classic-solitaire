@@ -17,4 +17,8 @@ internal fun GameScreen() {
 
     // redirect to login if player is not logged in
     // audio FloatingActionButton
+
+    // save each change, if player leaves for extended time and comes back
+    // save game in progress to data store
+    // make splash screen check for in progress and load most recent game
 }

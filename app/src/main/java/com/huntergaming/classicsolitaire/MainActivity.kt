@@ -7,10 +7,13 @@ import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
@@ -19,18 +22,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.huntergaming.authentication.viewmodel.AuthenticationViewModel
-import com.huntergaming.authentication.compose.Authentication
-import com.huntergaming.authentication.compose.NAV_TO_MAIN_MENU
-import com.huntergaming.authentication.compose.POP_STACK
+import com.huntergaming.ui.composable.Authentication
 import com.huntergaming.classicsolitaire.ui.compose.screens.GameScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.MainMenu
 import com.huntergaming.classicsolitaire.ui.compose.screens.SettingsScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.SplashScreen
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.classicsolitaire.viewmodel.PlayerViewModel
+import com.huntergaming.gamedata.viewmodel.PlayerViewModel
+import com.huntergaming.ui.composable.HunterGamingAlertDialog
+import com.huntergaming.ui.uitl.HunterGamingObserver
 import com.huntergaming.ui.uitl.CommunicationAdapter
+import com.huntergaming.ui.uitl.navigationRoute
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.launch
 
 @ExperimentalPagerApi
 @AndroidEntryPoint
@@ -54,33 +61,28 @@ internal class MainActivity : ComponentActivity() {
         setContent {
 
             val navController = rememberNavController()
-            ClassicSolitaireNavigation(
-                navController = navController,
-                authViewModel = authViewModel,
-                owner = this,
-                communicationAdapter = communicationAdapter,
-                context = applicationContext,
-                playerViewModel = playerViewModel
-            )
+
+            ClassicSolitaireTheme {
+                ClassicSolitaireNavigation(
+                    navController = navController,
+                    authViewModel = authViewModel,
+                    owner = this,
+                    communicationAdapter = communicationAdapter,
+                    context = applicationContext,
+                    playerViewModel = playerViewModel
+                )
+            }
 
             if (authViewModel.isLoggedIn() == true) {
                 navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route)
             }
 
-            LaunchedEffect(true) {
-                communicationAdapter.message.observe(this@MainActivity) {
-                    when (it.data[0]) {
-                        NAV_TO_MAIN_MENU -> {
-                            navController.navigate(ComposableRoutes.MAIN_MENU_NAV.route) {
-
-                                if (it.data.size > 1 && it.data[1] == POP_STACK) {
-                                    popUpTo(ComposableRoutes.MAIN_MENU_NAV.route) { inclusive = false }
-                                    launchSingleTop = true
-                                }
-                            }
-                        }
+            rememberCoroutineScope().launch {
+                navigationRoute
+                    .filterNot { it == "" }
+                    .collect {
+                        navController.navigate(it)
                     }
-                }
             }
         }
     }
@@ -119,55 +121,102 @@ private fun ClassicSolitaireNavigation(
     playerViewModel: PlayerViewModel,
     owner: LifecycleOwner,
     context: Context,
-    communicationAdapter: CommunicationAdapter,
+    communicationAdapter: CommunicationAdapter
 ) {
     val loadingContent: (suspend () -> Unit)? by rememberSaveable { mutableStateOf(null) }
 
-    NavHost(
+    val showProgressIndicator = remember { mutableStateOf(false) }
+
+    val dialogState = remember { mutableStateOf(false) }
+    val dialogText = remember { mutableStateOf("") }
+    val dialogTitle = remember { mutableStateOf(R.string.default_string) }
+    val onConfirm = remember { mutableStateOf({}) }
+    val onDismiss = remember { mutableStateOf({}) }
+    val dialogBackgroundImage = remember { mutableStateOf(R.drawable.ic_launcher_background) }
+    val dismissOnBackPress = remember { mutableStateOf(true) }
+    val dismissOnClickOutside = remember { mutableStateOf(true) }
+
+    HunterGamingObserver(
+        dialogState = dialogState,
+        owner = owner,
+        communicationAdapter = communicationAdapter,
+        dialogTitle = dialogTitle,
+        dialogMessage = dialogText,
+        context = context,
         navController = navController,
-        startDestination = ComposableRoutes.SPLASH_SCREEN_NAV.route,
-    ) {
-        composable(ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route) {
-            ClassicSolitaireTheme {
-                Authentication(
-                    authViewModel = authViewModel,
-                    owner = owner,
-                    context = context,
-                    communicationAdapter = communicationAdapter
-                )
-            }
+        mainMenuRoute = ComposableRoutes.MAIN_MENU_NAV.route,
+        showProgressIndicator = showProgressIndicator
+    )
+        .apply {
+            startErrorObserver(owner = owner)
+            startCreateAccountStateObserver()
+            startLoggedInStateObserver()
         }
 
-        composable(ComposableRoutes.SPLASH_SCREEN_NAV.route) {
-            ClassicSolitaireTheme {
-                SplashScreen(
-                    navController = navController,
-                    loadContent = loadingContent,
-                    authViewModel = authViewModel
-                )
+    Box {
+        NavHost(
+            navController = navController,
+            startDestination = ComposableRoutes.SPLASH_SCREEN_NAV.route,
+        ) {
+
+            composable(ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route) {
+                ClassicSolitaireTheme {
+                    Authentication(
+                        background = R.drawable.menu_bg
+                    )
+                }
             }
+
+            composable(ComposableRoutes.SPLASH_SCREEN_NAV.route) {
+                ClassicSolitaireTheme {
+                    SplashScreen(
+                        navController = navController,
+                        loadContent = loadingContent,
+                        authViewModel = authViewModel
+                    )
+                }
+            }
+
+            composable(ComposableRoutes.MAIN_MENU_NAV.route) {
+                ClassicSolitaireTheme {
+                    MainMenu(
+                        navController = navController
+                    )
+                }
+            }
+
+            composable(ComposableRoutes.SETTINGS_MENU_NAV.route) {
+                ClassicSolitaireTheme {
+                    SettingsScreen(
+                        navController = navController,
+                        authViewModel = authViewModel,
+                        lifecycleOwner = owner,
+                        playerViewModel = playerViewModel,
+                        dialogState = dialogState,
+                        dialogTitle = dialogTitle,
+                        dialogText = dialogText,
+                        onConfirm = onConfirm
+                    )
+                }
+            }
+
+            composable(ComposableRoutes.GAME_SCREEN_NAV.route) { ClassicSolitaireTheme { GameScreen() } }
         }
 
-        composable(ComposableRoutes.MAIN_MENU_NAV.route) {
-            ClassicSolitaireTheme {
-                MainMenu(
-                    navController = navController
-                )
-            }
+        if (showProgressIndicator.value) {
+            CircularProgressIndicator()
         }
 
-        composable(ComposableRoutes.SETTINGS_MENU_NAV.route) {
-            ClassicSolitaireTheme {
-                SettingsScreen(
-                    navController = navController,
-                    authViewModel = authViewModel,
-                    lifecycleOwner = owner,
-                    playerViewModel = playerViewModel
-                )
-            }
-        }
-
-        composable(ComposableRoutes.GAME_SCREEN_NAV.route) { ClassicSolitaireTheme { GameScreen() } }
+        HunterGamingAlertDialog(
+            onConfirm = onConfirm.value,
+            title = dialogTitle.value,
+            text = dialogText.value,
+            backgroundImage = dialogBackgroundImage.value,
+            state = dialogState,
+            onDismiss = onDismiss.value,
+            dismissOnBackPress = dismissOnBackPress.value,
+            dismissOnClickOutside = dismissOnClickOutside.value
+        )
     }
 }
 

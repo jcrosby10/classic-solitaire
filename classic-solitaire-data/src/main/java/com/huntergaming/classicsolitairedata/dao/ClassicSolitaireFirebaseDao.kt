@@ -4,8 +4,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.huntergaming.classicsolitairedata.model.PlayerSettings
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 @Singleton
 internal class ClassicSolitaireFirebaseDao @Inject constructor(
@@ -14,26 +14,20 @@ internal class ClassicSolitaireFirebaseDao @Inject constructor(
 
     // overridden functions
 
-    override suspend fun getPlayerSettings(): PlayerSettings? = withContext(Dispatchers.IO) {
-        var settings: PlayerSettings? = null
+    override suspend fun getPlayerSettings(): PlayerSettings? = suspendCancellableCoroutine { cont ->
+            db.collection("").document().get()
 
-        db.collection("").document().get()
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    settings = it.result?.toObject(PlayerSettings::class.java)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                       cont.resume(it.result?.toObject(PlayerSettings::class.java))
+                    }
+                    else cont.resume(null)
                 }
-            }
+        }
 
-        settings
-    }
-
-    override suspend fun updatePlayerSettings(playerSettings: PlayerSettings): Boolean = withContext(Dispatchers.IO) {
-        var success = false
-
+    override suspend fun updatePlayerSettings(playerSettings: PlayerSettings): Boolean = suspendCancellableCoroutine { cont ->
         db.collection("").document().set(playerSettings)
-            .addOnCompleteListener { success = it.isSuccessful }
-
-        success
+            .addOnCompleteListener { cont.resume(it.isSuccessful) }
     }
 }
 

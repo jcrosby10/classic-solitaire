@@ -3,6 +3,7 @@
 
     <string name="button_change_password">CHANGE PASSWORD</string>
     <string name="button_reset_password">RESET PASSWORD</string>
+    <string name="button_submit">SUBMIT</string>
 
     <string name="audio">Audio</string>
     <string name="data_consent">Data Consent</string>
@@ -20,11 +21,11 @@
     <string name="three">3</string>
 
     <string name="dialog_title_confirm">Confirm</string>
-    <string name="dialog_change_password">Please enter your information below to reset your password.</string>
-    <string name="password_change_success">Password successfully changed.</string>
-    <string name="password_change_failed">Changing your password failed. Try again later.</string>
+    <string name="dialog_reset_password">An email will be sent with instructions for resetting your password.</string>
 
     <string name="default_string"></string>
+
+    <string name="error_player_name">There was an error retrieving your name. Please contact us if the error persists.</string>
 
     <string name="content_description_settings">Change Settings</string>
     <string name="content_description_play">Play</string>

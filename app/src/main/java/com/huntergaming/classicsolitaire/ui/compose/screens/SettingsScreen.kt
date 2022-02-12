@@ -1,6 +1,7 @@
 package com.huntergaming.classicsolitaire.ui.compose.screens
 
 import android.content.res.Configuration
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,8 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Login
@@ -43,11 +43,10 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.huntergaming.authentication.viewmodel.AuthenticationViewModel
+import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.classicsolitaire.viewmodel.PlayerViewModel
-import com.huntergaming.gamedata.DataRequestState
-import com.huntergaming.ui.composable.HunterGamingAlertDialog
+import com.huntergaming.gamedata.viewmodel.PlayerViewModel
 import com.huntergaming.ui.composable.HunterGamingBackgroundImage
 import com.huntergaming.ui.composable.HunterGamingButton
 import com.huntergaming.ui.composable.HunterGamingFieldRow
@@ -66,14 +65,13 @@ import kotlinx.coroutines.launch
 internal fun SettingsScreen(
     navController: NavHostController,
     authViewModel: AuthenticationViewModel,
-    lifecycleOwner: LifecycleOwner?,
-    playerViewModel: PlayerViewModel?
+    lifecycleOwner: LifecycleOwner,
+    playerViewModel: PlayerViewModel?,
+    dialogTitle: MutableState<Int>,
+    dialogText: MutableState<String>,
+    dialogState: MutableState<Boolean>,
+    onConfirm: MutableState<() -> Unit>
 ) {
-
-    val dialogState = remember { mutableStateOf(false) }
-    val dialogText = remember { mutableStateOf(R.string.default_string) }
-    val dialogTitle = remember { mutableStateOf(R.string.default_string) }
-    val onConfirm = remember { mutableStateOf({}) }
 
     Box(
         modifier = Modifier
@@ -106,26 +104,19 @@ internal fun SettingsScreen(
             { SoundSettings() },
             { GameSettings() },
             {
-                if (lifecycleOwner != null && playerViewModel != null) {
+                if (playerViewModel != null) {
                     ProfileSettings(
                         authViewModel = authViewModel,
                         dialogState = dialogState,
                         dialogText = dialogText,
                         lifecycleOwner = lifecycleOwner,
                         playerViewModel = playerViewModel,
-                        dialogTitle = dialogTitle
+                        dialogTitle = dialogTitle,
+                        onConfirm = onConfirm,
+                        navController = navController
                     )
                 }
             }
-        )
-
-        HunterGamingAlertDialog(
-            onConfirm = { onConfirm.value },
-            title = dialogTitle.value,
-            text = dialogText.value,
-            backgroundImage = R.drawable.dialog_bg,
-            state = dialogState,
-            onDismiss = {}
         )
 
         HunterGamingButton(
@@ -231,8 +222,10 @@ private fun ProfileSettings(
     playerViewModel: PlayerViewModel,
     lifecycleOwner: LifecycleOwner,
     dialogTitle: MutableState<Int>,
-    dialogText: MutableState<Int>,
-    dialogState: MutableState<Boolean>
+    dialogText: MutableState<String>,
+    dialogState: MutableState<Boolean>,
+    onConfirm: MutableState<() -> Unit>,
+    navController: NavHostController
 ) {
 
     Column(
@@ -242,6 +235,9 @@ private fun ProfileSettings(
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
 
+        val scope = rememberCoroutineScope()
+        val showProgress = remember { mutableStateOf(false) }
+
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
@@ -250,33 +246,63 @@ private fun ProfileSettings(
 
             val name = remember { mutableStateOf(TextFieldValue(text =  "")) }
 
-            rememberCoroutineScope().launch {
-                playerViewModel.getPlayerName().observe(lifecycleOwner) {
-                    when (it) {
-                        DataRequestState.InProgress -> {}
-                        DataRequestState.NoInternet -> {}
-                        is DataRequestState.Success<*> ->{}
-                        is DataRequestState.Error ->{}
+            scope.launch {
+                playerViewModel.observePlayer().observe(lifecycleOwner) {
+                    if (it != null) {
+                        name.value = TextFieldValue(text = it.name)
                     }
                 }
             }
 
-            HunterGamingFieldRow(
-                fieldNameString = R.string.change_name,
-                hintString = R.string.change_name,
-                onValueChanged = {},
-                textState = name
+            Column {
+
+                HunterGamingFieldRow(
+                    fieldNameString = R.string.change_name,
+                    hintString = R.string.change_name,
+                    onValueChanged = {},
+                    textState = name
+                )
+
+                HunterGamingTextButton(
+                    onClick = {
+                        scope.launch { playerViewModel.updatePlayerName(name.value.text).observe(lifecycleOwner) {} }
+                    },
+                    text = R.string.button_submit
+                )
+            }
+
+            if (showProgress.value) CircularProgressIndicator()
+
+            val textString = LocalContext.current.getString(R.string.dialog_reset_password)
+
+            HunterGamingTextButton(
+                onClick = {
+                    dialogState.value = true
+                    dialogTitle.value = R.string.dialog_title_confirm
+                    dialogText.value = textString
+
+                    onConfirm.value = { scope.launch { authViewModel.resetPassword() } }
+                },
+
+                text = R.string.button_reset_password
             )
-
-            val snackbarHostState = remember { mutableStateOf(SnackbarHostState()) }
-
-            SnackbarHost(hostState = snackbarHostState.value)
-
-            HunterGamingTextButton(onClick = { /*TODO*/ }, text = R.string.button_reset_password)
         }
 
+        // todo add top ten games
+
+        // todo data state has to be handled individually
+
         HunterGamingButton(
-            onClick = { /*TODO*/ },
+            onClick = {// todo dialog are you sure
+                scope.launch {
+                    authViewModel.logout()
+
+                    navController.navigate(route = ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route) {
+                        popUpTo(route = ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                }
+            },
 
             icon =
                 if (authViewModel.isLoggedIn() == true) {
@@ -299,8 +325,12 @@ private fun DefaultPreview() {
         SettingsScreen(
             navController = rememberNavController(),
             authViewModel = AuthenticationViewModel(null, LocalContext.current),
-            lifecycleOwner = null,
-            playerViewModel = null
+            lifecycleOwner = ComponentActivity(),
+            playerViewModel = null,
+            dialogState = remember { mutableStateOf(false) },
+            dialogTitle = remember { mutableStateOf(R.drawable.dialog_bg) },
+            dialogText = remember { mutableStateOf("") },
+            onConfirm = remember { mutableStateOf({}) }
         )
     }
 }
@@ -313,8 +343,12 @@ private fun DefaultPreview2() {
         SettingsScreen(
             navController = rememberNavController(),
             authViewModel = AuthenticationViewModel(null, LocalContext.current),
-            lifecycleOwner = null,
-            playerViewModel = null
+            lifecycleOwner = ComponentActivity(),
+            playerViewModel = null,
+            dialogState = remember { mutableStateOf(false) },
+            dialogTitle = remember { mutableStateOf(R.drawable.dialog_bg) },
+            dialogText = remember { mutableStateOf("") },
+            onConfirm = remember { mutableStateOf({}) }
         )
     }
 }
@@ -327,8 +361,12 @@ private fun DefaultPreview3() {
         SettingsScreen(
             navController = rememberNavController(),
             authViewModel = AuthenticationViewModel(null, LocalContext.current),
-            lifecycleOwner = null,
-            playerViewModel = null
+            lifecycleOwner = ComponentActivity(),
+            playerViewModel = null,
+            dialogState = remember { mutableStateOf(false) },
+            dialogTitle = remember { mutableStateOf(R.drawable.dialog_bg) },
+            dialogText = remember { mutableStateOf("") },
+            onConfirm = remember { mutableStateOf({}) }
         )
     }
 }
@@ -341,8 +379,12 @@ private fun DefaultPreview4() {
         SettingsScreen(
             navController = rememberNavController(),
             authViewModel = AuthenticationViewModel(null, LocalContext.current),
-            lifecycleOwner = null,
-            playerViewModel = null
+            lifecycleOwner = ComponentActivity(),
+            playerViewModel = null,
+            dialogState = remember { mutableStateOf(false) },
+            dialogTitle = remember { mutableStateOf(R.drawable.dialog_bg) },
+            dialogText = remember { mutableStateOf("") },
+            onConfirm = remember { mutableStateOf({}) }
         )
     }
 }
