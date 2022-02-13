@@ -28,7 +28,7 @@ import com.huntergaming.classicsolitaire.ui.compose.screens.MainMenu
 import com.huntergaming.classicsolitaire.ui.compose.screens.SettingsScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.SplashScreen
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.classicsolitairedata.PlayerSettingsViewModel
+import com.huntergaming.classicsolitairedata.viewmodel.PlayerSettingsViewModel
 import com.huntergaming.gamedata.viewmodel.GameViewModel
 import com.huntergaming.gamedata.viewmodel.PlayerViewModel
 import com.huntergaming.ui.composable.HunterGamingAlertDialog

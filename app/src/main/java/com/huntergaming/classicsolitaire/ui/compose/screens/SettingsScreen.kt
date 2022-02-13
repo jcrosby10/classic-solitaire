@@ -49,7 +49,7 @@ import com.huntergaming.authentication.viewmodel.AuthenticationViewModel
 import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
-import com.huntergaming.classicsolitairedata.PlayerSettingsViewModel
+import com.huntergaming.classicsolitairedata.viewmodel.PlayerSettingsViewModel
 import com.huntergaming.gamedata.model.Game
 import com.huntergaming.gamedata.viewmodel.GameViewModel
 import com.huntergaming.gamedata.viewmodel.PlayerViewModel
@@ -91,7 +91,6 @@ internal fun SettingsScreen(
         HunterGamingBackgroundImage(image = R.drawable.menu_bg)
 
         HunterGamingTabs(
-
             tabIcons = listOf(
                 if (isSystemInDarkTheme()) Icons.TwoTone.VolumeUp else Icons.Outlined.VolumeUp,
                 if (isSystemInDarkTheme()) Icons.TwoTone.SportsEsports else Icons.Outlined.SportsEsports,
@@ -113,8 +112,18 @@ internal fun SettingsScreen(
                 initialPage = 0,
             ),
 
-            { SoundSettings() },
-            { GameSettings(playerSettingsViewModel = playerSettingsViewModel) },
+            {
+                SoundSettings(
+                    playerSettingsViewModel = playerSettingsViewModel,
+                    lifecycleOwner = lifecycleOwner
+                )
+            },
+            {
+                GameSettings(
+                    playerSettingsViewModel = playerSettingsViewModel,
+                    lifecycleOwner = lifecycleOwner
+                )
+            },
             { HighScores(
                 gameViewModel = gameViewModel,
                 lifecycleOwner = lifecycleOwner
@@ -135,7 +144,6 @@ internal fun SettingsScreen(
         )
 
         HunterGamingButton(
-
             modifier = Modifier
                 .padding(
                     start = dimensionResource(R.dimen.padding_xlarge),
@@ -150,7 +158,10 @@ internal fun SettingsScreen(
 }
 
 @Composable
-private fun SoundSettings() {
+private fun SoundSettings(
+    playerSettingsViewModel: PlayerSettingsViewModel?,
+    lifecycleOwner: LifecycleOwner
+) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -158,31 +169,69 @@ private fun SoundSettings() {
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
 
-        HunterGamingSettingsRow(
+        val audio = remember { mutableStateOf(.8f) }
+        val audioOn = remember { mutableStateOf(true) }
+        val sfx = remember { mutableStateOf(.8f) }
+        val sfxOn = remember { mutableStateOf(true) }
 
+        LaunchedEffect(key1 = true) {
+            playerSettingsViewModel?.getAudio()?.observe(lifecycleOwner) {
+                when (it) {
+                    is DataRequestState.Success<*> -> audio.value = it.data as Float? ?: audio.value
+                    DataRequestState.InProgress -> {}
+                }
+            }
+
+            playerSettingsViewModel?.getAudioOn()?.observe(lifecycleOwner) {
+                when (it) {
+                    is DataRequestState.Success<*> -> audioOn.value = it.data as Boolean? ?: audioOn.value
+                    DataRequestState.InProgress -> {}
+                }
+            }
+
+            playerSettingsViewModel?.getSfx()?.observe(lifecycleOwner) {
+                when (it) {
+                    is DataRequestState.Success<*> -> sfx.value = it.data as Float? ?: sfx.value
+                    DataRequestState.InProgress -> {}
+                }
+            }
+
+            playerSettingsViewModel?.getSfxOn()?.observe(lifecycleOwner) {
+                when (it) {
+                    is DataRequestState.Success<*> -> sfxOn.value = it.data as Boolean? ?: sfxOn.value
+                    DataRequestState.InProgress -> {}
+                }
+            }
+        }
+
+        HunterGamingSettingsRow(
             modifier = Modifier
                 .fillMaxWidth(),
 
             onCheckChange = {},
             onSliderChange = {},
-            settingName = R.string.audio
+            settingName = R.string.audio,
+            slider = audio,
+            checkbox = audioOn
         )
 
         HunterGamingSettingsRow(
-
             modifier = Modifier
                 .fillMaxWidth(),
 
             onCheckChange = {},
             onSliderChange = {},
-            settingName = R.string.sfx
+            settingName = R.string.sfx,
+            slider = sfx,
+            checkbox = sfxOn
         )
     }
 }
 
 @Composable
 private fun GameSettings(
-    playerSettingsViewModel: PlayerSettingsViewModel?
+    playerSettingsViewModel: PlayerSettingsViewModel?,
+    lifecycleOwner: LifecycleOwner
 ) {
     Column(
         modifier = Modifier
@@ -190,6 +239,16 @@ private fun GameSettings(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
+
+        val numberOfDecks = remember { mutableStateOf(0) }
+        LaunchedEffect(key1 = true) {
+            playerSettingsViewModel?.getNumberOfDecks()?.observe(lifecycleOwner) {
+                when (it) {
+                    is DataRequestState.Success<*> -> numberOfDecks.value = it.data as Int? ?: 0
+                    DataRequestState.InProgress -> {}
+                }
+            }
+        }
 
         HunterGamingRadioButtonRow(
             rowText = R.string.number_of_decks,
@@ -200,8 +259,8 @@ private fun GameSettings(
                 stringResource(R.string.three)
             ),
 
-            onSelect = {  },
-            selectedIndex = 0
+            onSelect = { numberOfDecks.value = it.toInt() },
+            selectedIndex = numberOfDecks.value
         )
 
         Row(
@@ -210,6 +269,16 @@ private fun GameSettings(
         ) {
 
             HunterGamingTitleText(text = R.string.deck_background)
+
+            val deckBackground = remember { mutableStateOf(0) }
+            LaunchedEffect(key1 = true) {
+                playerSettingsViewModel?.getDeckBackground()?.observe(lifecycleOwner) {
+                    when (it) {
+                        is DataRequestState.Success<*> -> deckBackground.value = it.data as Int? ?: 0
+                        DataRequestState.InProgress -> {}
+                    }
+                }
+            }
 
             HunterGamingHorizontalImageRadioButton(
                 images = listOf(
@@ -224,8 +293,8 @@ private fun GameSettings(
                 imageWidth = com.huntergaming.ui.R.dimen.image_radio_width,
                 imageHeight = com.huntergaming.ui.R.dimen.image_radio_height,
                 contentDescriptions = stringArrayResource(R.array.content_descriptions_card_backs).toList(),
-                onSelect = { },
-                selectedIndex = 0
+                onSelect = { deckBackground.value = it },
+                selectedIndex = deckBackground.value
             )
         }
     }
