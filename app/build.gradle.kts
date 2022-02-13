@@ -57,6 +57,7 @@ android {
 dependencies {
     implementation(project(mapOf("path" to ":authentication")))
     implementation(project(mapOf("path" to ":gamedata")))
+    implementation(project(mapOf("path" to ":classic-solitaire-data")))
     implementation(project(mapOf("path" to ":ui")))
     implementation(project(mapOf("path" to ":web")))
 

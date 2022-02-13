@@ -22,6 +22,7 @@
 
     <string name="dialog_title_confirm">Confirm</string>
     <string name="dialog_reset_password">An email will be sent with instructions for resetting your password.</string>
+    <string name="dialog_logout_confirm">Are you sure you want to logout?</string>
 
     <string name="default_string"></string>
 
@@ -35,6 +36,7 @@
     <string name="content_description_gameplay">Change the gameplay settings.</string>
     <string name="content_description_profile">Change your personal profile settings.</string>
     <string name="content_description_logout">Logout</string>
+    <string name="content_description_high_score">Your high scores.</string>
 
     <array name="content_descriptions_card_backs">
         <item>A red card back</item>

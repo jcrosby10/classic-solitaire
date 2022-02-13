@@ -28,6 +28,8 @@ import com.huntergaming.classicsolitaire.ui.compose.screens.MainMenu
 import com.huntergaming.classicsolitaire.ui.compose.screens.SettingsScreen
 import com.huntergaming.classicsolitaire.ui.compose.screens.SplashScreen
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
+import com.huntergaming.classicsolitairedata.PlayerSettingsViewModel
+import com.huntergaming.gamedata.viewmodel.GameViewModel
 import com.huntergaming.gamedata.viewmodel.PlayerViewModel
 import com.huntergaming.ui.composable.HunterGamingAlertDialog
 import com.huntergaming.ui.uitl.HunterGamingObserver
@@ -54,6 +56,8 @@ internal class MainActivity : ComponentActivity() {
 
     private val authViewModel: AuthenticationViewModel by viewModels()
     private val playerViewModel: PlayerViewModel by viewModels()
+    private val gameViewModel: GameViewModel by viewModels()
+    private val playerSettingsViewModel: PlayerSettingsViewModel by viewModels()
 
     // overridden functions
 
@@ -73,7 +77,9 @@ internal class MainActivity : ComponentActivity() {
                     owner = this,
                     communicationAdapter = communicationAdapter,
                     context = applicationContext,
-                    playerViewModel = playerViewModel
+                    playerViewModel = playerViewModel,
+                    gameViewModel = gameViewModel,
+                    playerSettingsViewModel = playerSettingsViewModel
                 )
             }
 
@@ -133,6 +139,8 @@ private fun ClassicSolitaireNavigation(
     navController: NavHostController,
     authViewModel: AuthenticationViewModel,
     playerViewModel: PlayerViewModel,
+    gameViewModel: GameViewModel,
+    playerSettingsViewModel: PlayerSettingsViewModel,
     owner: LifecycleOwner,
     context: Context,
     communicationAdapter: CommunicationAdapter
@@ -209,7 +217,9 @@ private fun ClassicSolitaireNavigation(
                         dialogState = dialogState,
                         dialogTitle = dialogTitle,
                         dialogText = dialogText,
-                        onConfirm = onConfirm
+                        onConfirm = onConfirm,
+                        gameViewModel = gameViewModel,
+                        playerSettingsViewModel = playerSettingsViewModel
                     )
                 }
             }

@@ -16,15 +16,18 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Login
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.SportsEsports
 import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.Login
 import androidx.compose.material.icons.twotone.Logout
 import androidx.compose.material.icons.twotone.Person
+import androidx.compose.material.icons.twotone.Public
 import androidx.compose.material.icons.twotone.SportsEsports
 import androidx.compose.material.icons.twotone.VolumeUp
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,8 +49,12 @@ import com.huntergaming.authentication.viewmodel.AuthenticationViewModel
 import com.huntergaming.classicsolitaire.ComposableRoutes
 import com.huntergaming.classicsolitaire.R
 import com.huntergaming.classicsolitaire.ui.theme.ClassicSolitaireTheme
+import com.huntergaming.classicsolitairedata.PlayerSettingsViewModel
+import com.huntergaming.gamedata.model.Game
+import com.huntergaming.gamedata.viewmodel.GameViewModel
 import com.huntergaming.gamedata.viewmodel.PlayerViewModel
 import com.huntergaming.ui.composable.HunterGamingBackgroundImage
+import com.huntergaming.ui.composable.HunterGamingBodyText
 import com.huntergaming.ui.composable.HunterGamingButton
 import com.huntergaming.ui.composable.HunterGamingFieldRow
 import com.huntergaming.ui.composable.HunterGamingHorizontalImageRadioButton
@@ -56,6 +63,8 @@ import com.huntergaming.ui.composable.HunterGamingSettingsRow
 import com.huntergaming.ui.composable.HunterGamingTabs
 import com.huntergaming.ui.composable.HunterGamingTextButton
 import com.huntergaming.ui.composable.HunterGamingTitleText
+import com.huntergaming.ui.uitl.DataRequestState
+import com.huntergaming.ui.uitl.isValidField
 import kotlinx.coroutines.launch
 
 // composables
@@ -67,12 +76,13 @@ internal fun SettingsScreen(
     authViewModel: AuthenticationViewModel,
     lifecycleOwner: LifecycleOwner,
     playerViewModel: PlayerViewModel?,
+    gameViewModel: GameViewModel?,
+    playerSettingsViewModel: PlayerSettingsViewModel?,
     dialogTitle: MutableState<Int>,
     dialogText: MutableState<String>,
     dialogState: MutableState<Boolean>,
     onConfirm: MutableState<() -> Unit>
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -85,37 +95,42 @@ internal fun SettingsScreen(
             tabIcons = listOf(
                 if (isSystemInDarkTheme()) Icons.TwoTone.VolumeUp else Icons.Outlined.VolumeUp,
                 if (isSystemInDarkTheme()) Icons.TwoTone.SportsEsports else Icons.Outlined.SportsEsports,
+                if (isSystemInDarkTheme()) Icons.TwoTone.Public else Icons.Outlined.Public,
                 if (isSystemInDarkTheme()) Icons.TwoTone.Person else Icons.Outlined.Person
             ),
 
             contentDescriptions = listOf(
                 R.string.content_description_sound,
                 R.string.content_description_gameplay,
+                R.string.content_description_high_score,
                 R.string.content_description_profile
             ),
 
             pagerState = rememberPagerState(
-                pageCount = 3,
+                pageCount = 4,
                 initialOffscreenLimit = 2,
                 infiniteLoop = true,
                 initialPage = 0,
             ),
 
             { SoundSettings() },
-            { GameSettings() },
+            { GameSettings(playerSettingsViewModel = playerSettingsViewModel) },
+            { HighScores(
+                gameViewModel = gameViewModel,
+                lifecycleOwner = lifecycleOwner
+            )
+            },
             {
-                if (playerViewModel != null) {
-                    ProfileSettings(
-                        authViewModel = authViewModel,
-                        dialogState = dialogState,
-                        dialogText = dialogText,
-                        lifecycleOwner = lifecycleOwner,
-                        playerViewModel = playerViewModel,
-                        dialogTitle = dialogTitle,
-                        onConfirm = onConfirm,
-                        navController = navController
-                    )
-                }
+                ProfileSettings(
+                    authViewModel = authViewModel,
+                    dialogState = dialogState,
+                    dialogText = dialogText,
+                    lifecycleOwner = lifecycleOwner,
+                    playerViewModel = playerViewModel,
+                    dialogTitle = dialogTitle,
+                    onConfirm = onConfirm,
+                    navController = navController
+                )
             }
         )
 
@@ -136,7 +151,6 @@ internal fun SettingsScreen(
 
 @Composable
 private fun SoundSettings() {
-
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -167,8 +181,9 @@ private fun SoundSettings() {
 }
 
 @Composable
-private fun GameSettings() {
-
+private fun GameSettings(
+    playerSettingsViewModel: PlayerSettingsViewModel?
+) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -216,10 +231,42 @@ private fun GameSettings() {
     }
 }
 
+@Suppress("UNCHECKED_CAST")
+@Composable
+private fun HighScores(
+    gameViewModel: GameViewModel?,
+    lifecycleOwner: LifecycleOwner
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+
+        val games = remember { mutableStateOf(listOf<Game>()) }
+
+        for (game in games.value) {
+            Row {
+               HunterGamingBodyText(text = game.score)
+            }
+        }
+
+        LaunchedEffect(key1 = true) {
+            gameViewModel?.getHighScoreGames()?.observe(lifecycleOwner) {
+                when (it) {
+                    is DataRequestState.Success<*> -> { games.value = (it.data as List<Game>) }
+                    DataRequestState.InProgress -> {}
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun ProfileSettings(
-    authViewModel: AuthenticationViewModel,
-    playerViewModel: PlayerViewModel,
+    authViewModel: AuthenticationViewModel?,
+    playerViewModel: PlayerViewModel?,
     lifecycleOwner: LifecycleOwner,
     dialogTitle: MutableState<Int>,
     dialogText: MutableState<String>,
@@ -227,7 +274,6 @@ private fun ProfileSettings(
     onConfirm: MutableState<() -> Unit>,
     navController: NavHostController
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -247,7 +293,7 @@ private fun ProfileSettings(
             val name = remember { mutableStateOf(TextFieldValue(text =  "")) }
 
             scope.launch {
-                playerViewModel.observePlayer().observe(lifecycleOwner) {
+                playerViewModel?.observePlayer()?.observe(lifecycleOwner) {
                     if (it != null) {
                         name.value = TextFieldValue(text = it.name)
                     }
@@ -256,17 +302,19 @@ private fun ProfileSettings(
 
             Column {
 
+                val enabled = remember { mutableStateOf(false) }
                 HunterGamingFieldRow(
                     fieldNameString = R.string.change_name,
                     hintString = R.string.change_name,
-                    onValueChanged = {},
+                    onValueChanged = { enabled.value = isValidField(it.text) },
                     textState = name
                 )
 
                 HunterGamingTextButton(
                     onClick = {
-                        scope.launch { playerViewModel.updatePlayerName(name.value.text).observe(lifecycleOwner) {} }
+                        scope.launch { playerViewModel?.updatePlayerName(name.value.text)?.observe(lifecycleOwner) {} }
                     },
+                    isEnabled = enabled.value,
                     text = R.string.button_submit
                 )
             }
@@ -281,31 +329,34 @@ private fun ProfileSettings(
                     dialogTitle.value = R.string.dialog_title_confirm
                     dialogText.value = textString
 
-                    onConfirm.value = { scope.launch { authViewModel.resetPassword() } }
+                    onConfirm.value = { scope.launch { authViewModel?.resetPassword() } }
                 },
 
                 text = R.string.button_reset_password
             )
         }
 
-        // todo add top ten games
-
-        // todo data state has to be handled individually
-
+        val textString = LocalContext.current.getString(R.string.dialog_logout_confirm)
         HunterGamingButton(
-            onClick = {// todo dialog are you sure
-                scope.launch {
-                    authViewModel.logout()
+            onClick = {
+                dialogState.value = true
+                dialogTitle.value = R.string.dialog_title_confirm
+                dialogText.value = textString
 
-                    navController.navigate(route = ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route) {
-                        popUpTo(route = ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route) { inclusive = false }
-                        launchSingleTop = true
+                onConfirm.value = {
+                    scope.launch {
+                        authViewModel?.logout()
+
+                        navController.navigate(route = ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route) {
+                            popUpTo(route = ComposableRoutes.AUTHENTICATION_SCREEN_NAV.route) { inclusive = false }
+                            launchSingleTop = true
+                        }
                     }
                 }
             },
 
             icon =
-                if (authViewModel.isLoggedIn() == true) {
+                if (authViewModel?.isLoggedIn() == true) {
                     if (isSystemInDarkTheme()) Icons.TwoTone.Logout else Icons.Outlined.Logout
                 }
                 else if (isSystemInDarkTheme()) Icons.TwoTone.Login else Icons.Outlined.Login,
@@ -327,6 +378,8 @@ private fun DefaultPreview() {
             authViewModel = AuthenticationViewModel(null, LocalContext.current),
             lifecycleOwner = ComponentActivity(),
             playerViewModel = null,
+            playerSettingsViewModel = null,
+            gameViewModel = null,
             dialogState = remember { mutableStateOf(false) },
             dialogTitle = remember { mutableStateOf(R.drawable.dialog_bg) },
             dialogText = remember { mutableStateOf("") },
@@ -345,6 +398,8 @@ private fun DefaultPreview2() {
             authViewModel = AuthenticationViewModel(null, LocalContext.current),
             lifecycleOwner = ComponentActivity(),
             playerViewModel = null,
+            gameViewModel = null,
+            playerSettingsViewModel = null,
             dialogState = remember { mutableStateOf(false) },
             dialogTitle = remember { mutableStateOf(R.drawable.dialog_bg) },
             dialogText = remember { mutableStateOf("") },
@@ -363,6 +418,8 @@ private fun DefaultPreview3() {
             authViewModel = AuthenticationViewModel(null, LocalContext.current),
             lifecycleOwner = ComponentActivity(),
             playerViewModel = null,
+            gameViewModel = null,
+            playerSettingsViewModel = null,
             dialogState = remember { mutableStateOf(false) },
             dialogTitle = remember { mutableStateOf(R.drawable.dialog_bg) },
             dialogText = remember { mutableStateOf("") },
@@ -381,6 +438,8 @@ private fun DefaultPreview4() {
             authViewModel = AuthenticationViewModel(null, LocalContext.current),
             lifecycleOwner = ComponentActivity(),
             playerViewModel = null,
+            gameViewModel = null,
+            playerSettingsViewModel = null,
             dialogState = remember { mutableStateOf(false) },
             dialogTitle = remember { mutableStateOf(R.drawable.dialog_bg) },
             dialogText = remember { mutableStateOf("") },
