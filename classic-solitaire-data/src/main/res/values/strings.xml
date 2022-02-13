@@ -2,4 +2,5 @@
 <resources>
     <string name="error_get_settings">There was an error retrieving your settings.</string>
     <string name="error_update_settings">There was an error updating your settings.</string>
+    <string name="error_migrating_data">There was an error migrating data from your phone back to Firebase. Go to settings and manually migrate data when you have a strong internet connection.</string>
 </resources>

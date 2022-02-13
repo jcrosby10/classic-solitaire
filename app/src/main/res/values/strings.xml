@@ -26,6 +26,7 @@
     <string name="default_string"></string>
 
     <string name="error_player_name">There was an error retrieving your name. Please contact us if the error persists.</string>
+    <string name="error_no_internet">Classic Solitaire will not work without an internet connection. Please wait until you have a connection before playing.</string>
 
     <string name="content_description_settings">Change Settings</string>
     <string name="content_description_play">Play</string>

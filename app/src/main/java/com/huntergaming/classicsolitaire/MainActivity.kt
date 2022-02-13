@@ -33,6 +33,7 @@ import com.huntergaming.ui.composable.HunterGamingAlertDialog
 import com.huntergaming.ui.uitl.HunterGamingObserver
 import com.huntergaming.ui.uitl.CommunicationAdapter
 import com.huntergaming.ui.uitl.navigationRoute
+import com.huntergaming.web.InternetStatus
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
@@ -47,6 +48,9 @@ internal class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var communicationAdapter: CommunicationAdapter
+
+    @Inject
+    lateinit var internetStatus: InternetStatus
 
     private val authViewModel: AuthenticationViewModel by viewModels()
     private val playerViewModel: PlayerViewModel by viewModels()
@@ -85,6 +89,16 @@ internal class MainActivity : ComponentActivity() {
                     }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        internetStatus.register()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        internetStatus.unregister()
     }
 
     override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
@@ -132,7 +146,7 @@ private fun ClassicSolitaireNavigation(
     val dialogTitle = remember { mutableStateOf(R.string.default_string) }
     val onConfirm = remember { mutableStateOf({}) }
     val onDismiss = remember { mutableStateOf({}) }
-    val dialogBackgroundImage = remember { mutableStateOf(R.drawable.ic_launcher_background) }
+    val dialogBackgroundImage = R.drawable.dialog_bg
     val dismissOnBackPress = remember { mutableStateOf(true) }
     val dismissOnClickOutside = remember { mutableStateOf(true) }
 
@@ -211,7 +225,7 @@ private fun ClassicSolitaireNavigation(
             onConfirm = onConfirm.value,
             title = dialogTitle.value,
             text = dialogText.value,
-            backgroundImage = dialogBackgroundImage.value,
+            backgroundImage = dialogBackgroundImage,
             state = dialogState,
             onDismiss = onDismiss.value,
             dismissOnBackPress = dismissOnBackPress.value,
@@ -220,7 +234,7 @@ private fun ClassicSolitaireNavigation(
     }
 }
 
-internal enum class ComposableRoutes(val route: String) {
+enum class ComposableRoutes(val route: String) {
     AUTHENTICATION_SCREEN_NAV("classicSolitaire/Authentication"),
     SPLASH_SCREEN_NAV("classicSolitaire/SplashScreen"),
     MAIN_MENU_NAV("classicSolitaire/MainMenu"),
